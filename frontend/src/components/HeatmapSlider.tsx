@@ -42,10 +42,10 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
 
   return (
     <div
-      className={`rounded-xl p-4 border transition-colors ${
+      className={`rounded-xl p-4 shadow-sm transition-colors ${
         isDark
-          ? 'bg-[#0B0F19] border-slate-800 text-slate-100'
-          : 'bg-white border-slate-200 text-slate-900'
+          ? 'bg-[#0B0F19] text-slate-100'
+          : 'bg-white text-slate-900'
       }`}
     >
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3">
@@ -53,14 +53,14 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
           <button
             type="button"
             onClick={onToggleHeatmap}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
               showHeatmap
                 ? isDark
-                  ? 'bg-blue-600/15 border-blue-500/50 text-blue-400 font-semibold'
-                  : 'bg-blue-50 border-blue-300 text-blue-700 font-semibold'
+                  ? 'bg-blue-600/20 text-blue-400 font-semibold'
+                  : 'bg-blue-50 text-blue-700 font-semibold shadow-xs'
                 : isDark
-                ? 'bg-slate-900/60 border-slate-800 text-slate-400'
-                : 'bg-slate-100 border-slate-200 text-slate-600'
+                ? 'bg-[#070A12] text-slate-400 hover:text-white'
+                : 'bg-slate-50 text-slate-600 hover:text-slate-900'
             }`}
           >
             <Layers className="w-3.5 h-3.5 text-blue-500" />
@@ -78,10 +78,10 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
           <button
             type="button"
             onClick={() => setIsPlaying(!isPlaying)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider border transition ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition cursor-pointer ${
               isDark
-                ? 'bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border-blue-500/40'
-                : 'bg-blue-50 hover:bg-blue-100 text-blue-600 border-blue-200'
+                ? 'bg-blue-600/20 hover:bg-blue-600/30 text-blue-400'
+                : 'bg-blue-50 hover:bg-blue-100 text-blue-600 shadow-xs'
             }`}
           >
             {isPlaying ? (
@@ -101,10 +101,10 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
               setIsPlaying(false);
               onHourChange(hours[0]);
             }}
-            className={`p-1.5 rounded-lg border transition ${
+            className={`p-1.5 rounded-lg transition cursor-pointer ${
               isDark
-                ? 'bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-white border-slate-800'
-                : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border-slate-200'
+                ? 'bg-[#070A12] hover:bg-slate-900 text-slate-400 hover:text-white'
+                : 'bg-slate-50 hover:bg-slate-100 text-slate-600'
             }`}
             title="Réinitialiser à T+0"
           >
@@ -129,7 +129,9 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
             );
             onHourChange(closest);
           }}
-          className={`w-full accent-blue-600 cursor-pointer h-1.5 rounded-lg ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`}
+          className={`w-full accent-blue-600 cursor-pointer h-1.5 rounded-lg ${
+            isDark ? 'bg-slate-800' : 'bg-slate-200'
+          }`}
         />
 
         {/* Ticks */}
@@ -157,8 +159,8 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
 
       {/* Color Legend */}
       <div
-        className={`flex flex-wrap items-center justify-between text-[10px] font-mono pt-2.5 mt-2 border-t border-dashed gap-2 ${
-          isDark ? 'border-slate-800 text-slate-400' : 'border-slate-200 text-slate-500'
+        className={`flex flex-wrap items-center justify-between text-[10px] font-mono pt-2.5 mt-2.5 border-t gap-2 ${
+          isDark ? 'border-white/[0.04] text-slate-400' : 'border-black/[0.04] text-slate-500'
         }`}
       >
         <span className="font-semibold uppercase tracking-wider">Légende Risque :</span>

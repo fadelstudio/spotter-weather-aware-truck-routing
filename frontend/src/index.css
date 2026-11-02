@@ -18,14 +18,20 @@
   background: #334155;
 }
 
-/* Leaflet Customizations - Clean flat styling */
+/* Leaflet Customizations - Clean modern map styling */
 .leaflet-container {
   background: transparent !important;
+  outline: none;
+}
+
+/* High-contrast Cockpit Dark Map Tile Inversion (Zero API key, crisp and legible) */
+.map-dark-tiles .leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(85%) contrast(92%);
 }
 
 .leaflet-popup-content-wrapper {
   background: transparent !important;
-  box-shadow: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
   padding: 0 !important;
   border: none !important;
   border-radius: 10px !important;
@@ -38,5 +44,24 @@
 
 .leaflet-popup-tip-container {
   display: none !important;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #1e293b !important;
+  border: none !important;
+}
+
+.dark .leaflet-control-zoom a,
+.map-dark-tiles .leaflet-control-zoom a {
+  background-color: rgba(11, 15, 25, 0.95) !important;
+  color: #f1f5f9 !important;
 }
 

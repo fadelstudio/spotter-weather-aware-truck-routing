@@ -19,19 +19,19 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
   const evalRes = checkpoint.risk_evaluation;
 
   return (
-    <div className="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-[2000] flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-[2000] flex items-center justify-center p-4">
       <div
-        className={`border rounded-xl max-w-md w-full p-5 relative transition-all animate-in fade-in zoom-in-95 duration-150 ${
+        className={`rounded-xl max-w-md w-full p-5 relative shadow-xl transition-all animate-in fade-in zoom-in-95 duration-150 ${
           isDark
-            ? 'bg-[#0B0F19] border-slate-800 text-slate-100'
-            : 'bg-white border-slate-200 text-slate-900'
+            ? 'bg-[#0B0F19] text-slate-100'
+            : 'bg-white text-slate-900'
         }`}
       >
         <button
           onClick={onClose}
-          className={`absolute top-4 right-4 p-1.5 rounded-lg transition ${
+          className={`absolute top-4 right-4 p-1.5 rounded-lg transition cursor-pointer ${
             isDark
-              ? 'text-slate-400 hover:text-white hover:bg-slate-800/80'
+              ? 'text-slate-400 hover:text-white hover:bg-white/5'
               : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
@@ -40,7 +40,7 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
 
         <div className="flex items-center gap-3 mb-4">
           <div
-            className="w-9 h-9 rounded-lg flex items-center justify-center font-mono font-bold text-white text-sm"
+            className="w-9 h-9 rounded-lg flex items-center justify-center font-mono font-bold text-white text-sm shadow-xs"
             style={{ backgroundColor: evalRes.overall_color }}
           >
             {evalRes.overall_score}
@@ -57,10 +57,9 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
 
         {/* Status Badge */}
         <div
-          className="px-3 py-2 rounded-xl border text-xs font-bold mb-4 flex items-center justify-between"
+          className="px-3 py-2 rounded-xl text-xs font-bold mb-4 flex items-center justify-between"
           style={{
-            borderColor: `${evalRes.overall_color}60`,
-            backgroundColor: `${evalRes.overall_color}15`,
+            backgroundColor: `${evalRes.overall_color}18`,
             color: evalRes.overall_color,
           }}
         >
@@ -81,8 +80,8 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
         <div className="space-y-2 text-xs">
           {/* Wind */}
           <div
-            className={`p-3 rounded-xl border flex items-start justify-between ${
-              isDark ? 'bg-[#070A12] border-slate-800' : 'bg-slate-50 border-slate-200'
+            className={`p-3 rounded-xl flex items-start justify-between ${
+              isDark ? 'bg-[#070A12]' : 'bg-slate-50'
             }`}
           >
             <div className="flex items-start gap-2.5">
@@ -99,8 +98,8 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
 
           {/* Rain */}
           <div
-            className={`p-3 rounded-xl border flex items-start justify-between ${
-              isDark ? 'bg-[#070A12] border-slate-800' : 'bg-slate-50 border-slate-200'
+            className={`p-3 rounded-xl flex items-start justify-between ${
+              isDark ? 'bg-[#070A12]' : 'bg-slate-50'
             }`}
           >
             <div className="flex items-start gap-2.5">
@@ -117,8 +116,8 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
 
           {/* Snow */}
           <div
-            className={`p-3 rounded-xl border flex items-start justify-between ${
-              isDark ? 'bg-[#070A12] border-slate-800' : 'bg-slate-50 border-slate-200'
+            className={`p-3 rounded-xl flex items-start justify-between ${
+              isDark ? 'bg-[#070A12]' : 'bg-slate-50'
             }`}
           >
             <div className="flex items-start gap-2.5">
@@ -136,13 +135,17 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
 
         {/* Primary Hazard message */}
         <div
-          className={`mt-4 p-3 rounded-lg border text-xs ${
+          className={`mt-4 p-3 rounded-lg text-xs ${
             isDark
-              ? 'bg-slate-900/50 border-slate-800 text-slate-300'
-              : 'bg-slate-50 border-slate-200 text-slate-800'
+              ? 'bg-[#070A12] text-slate-300'
+              : 'bg-slate-50 text-slate-800'
           }`}
         >
-          <strong className={`block mb-0.5 uppercase tracking-wider text-[10px] ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+          <strong
+            className={`block mb-0.5 uppercase tracking-wider text-[10px] ${
+              isDark ? 'text-blue-400' : 'text-blue-600'
+            }`}
+          >
             Synthèse d'Avertissement :
           </strong>
           {evalRes.primary_hazard}
@@ -150,7 +153,7 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
 
         <button
           onClick={onClose}
-          className="mt-4 w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold uppercase tracking-wider py-2.5 rounded-lg transition cursor-pointer"
+          className="mt-4 w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold uppercase tracking-wider py-2.5 rounded-lg transition cursor-pointer shadow-sm"
         >
           Fermer l'Inspection
         </button>

@@ -18,26 +18,37 @@ interface RouteMapProps {
   theme?: 'dark' | 'light';
 }
 
-const TILE_PROVIDERS: Record<MapViewStyle, { url: string; maxZoom: number; subdomains?: string[] }> = {
+interface TileProviderConfig {
+  url: string;
+  maxZoom: number;
+  subdomains?: string[];
+  isDarkFilter?: boolean;
+}
+
+const TILE_PROVIDERS: Record<MapViewStyle, TileProviderConfig> = {
   dark: {
-    url: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-    maxZoom: 16,
-    subdomains: ['server', 'services'],
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    maxZoom: 19,
+    subdomains: ['a', 'b', 'c'],
+    isDarkFilter: true,
   },
   light: {
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-    maxZoom: 16,
-    subdomains: ['server', 'services'],
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    maxZoom: 19,
+    subdomains: ['a', 'b', 'c'],
+    isDarkFilter: false,
   },
   satellite: {
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     maxZoom: 18,
     subdomains: ['server', 'services'],
+    isDarkFilter: false,
   },
   navigation: {
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     maxZoom: 19,
     subdomains: ['a', 'b', 'c'],
+    isDarkFilter: false,
   },
 };
 
@@ -64,8 +75,9 @@ export const RouteMap: React.FC<RouteMapProps> = ({
   const tileLayerRef = useRef<any>(null);
   const layersGroupRef = useRef<any>(null);
   const heatmapGroupRef = useRef<any>(null);
+  const lastFittedRouteKeyRef = useRef<string>('');
 
-  // Map view style selector (Dark, Light, Satellite, Navigation)
+  // Map view style selector
   const [mapStyle, setMapStyle] = useState<MapViewStyle>(theme === 'dark' ? 'dark' : 'light');
 
   // Synchronize style when global theme changes
@@ -80,7 +92,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
     if (typeof L === 'undefined') {
-      console.warn('Leaflet non chargé');
+      console.warn('Leaflet non charge');
       return;
     }
 
@@ -95,8 +107,12 @@ export const RouteMap: React.FC<RouteMapProps> = ({
     const provider = TILE_PROVIDERS[mapStyle];
     tileLayerRef.current = L.tileLayer(provider.url, {
       maxZoom: provider.maxZoom,
-      subdomains: provider.subdomains,
+      subdomains: provider.subdomains || ['a', 'b', 'c'],
     }).addTo(map);
+
+    if (mapContainerRef.current) {
+      mapContainerRef.current.classList.toggle('map-dark-tiles', !!provider.isDarkFilter);
+    }
 
     layersGroupRef.current = L.layerGroup().addTo(map);
     heatmapGroupRef.current = L.layerGroup().addTo(map);
@@ -105,7 +121,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
 
     setTimeout(() => {
       map.invalidateSize();
-    }, 250);
+    }, 200);
 
     return () => {
       map.remove();
@@ -113,17 +129,33 @@ export const RouteMap: React.FC<RouteMapProps> = ({
     };
   }, []);
 
-  // Update Tile Layer when user switches Map Style
+  // Update Tile Layer and dark filter when user switches Map Style
   useEffect(() => {
     const map = mapInstanceRef.current;
-    if (!map || !tileLayerRef.current) return;
+    if (!map) return;
 
     const provider = TILE_PROVIDERS[mapStyle];
-    tileLayerRef.current.setUrl(provider.url);
-    tileLayerRef.current.options.maxZoom = provider.maxZoom;
+
+    if (tileLayerRef.current) {
+      map.removeLayer(tileLayerRef.current);
+      tileLayerRef.current = null;
+    }
+
+    const newLayer = L.tileLayer(provider.url, {
+      maxZoom: provider.maxZoom,
+      subdomains: provider.subdomains || ['a', 'b', 'c'],
+    }).addTo(map);
+
+    // Ensure tile layer stays beneath geojson and heatmap layers
+    newLayer.bringToBack();
+    tileLayerRef.current = newLayer;
+
+    if (mapContainerRef.current) {
+      mapContainerRef.current.classList.toggle('map-dark-tiles', !!provider.isDarkFilter);
+    }
   }, [mapStyle]);
 
-  // Recenter / Fit bounds helper
+  // Recenter / Fit bounds helper (explicitly triggered by user)
   const handleRecenter = () => {
     const map = mapInstanceRef.current;
     if (!map || !routes || routes.length === 0) return;
@@ -134,7 +166,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
     });
 
     if (allLatLngs.length > 0) {
-      map.fitBounds(allLatLngs, { padding: [50, 50], animate: true, duration: 0.8 });
+      map.fitBounds(allLatLngs, { padding: [50, 50], animate: true, duration: 0.6 });
     }
   };
 
@@ -155,23 +187,23 @@ export const RouteMap: React.FC<RouteMapProps> = ({
       coords.forEach((c) => allLatLngs.push(c as [number, number]));
 
       if (!isSelected) {
-        // Alternative routes: sleek subtle dashed line
+        // Alternative routes: subtle dashed line
         const altPolyline = L.polyline(coords, {
           color: mapStyle === 'dark' || mapStyle === 'satellite' ? '#64748B' : '#94A3B8',
           weight: 2,
           dashArray: '5, 8',
-          opacity: 0.5,
+          opacity: 0.55,
           lineCap: 'round',
           lineJoin: 'round',
         });
         altPolyline.on('click', () => onSelectRoute(route.id));
         layers.addLayer(altPolyline);
       } else {
-        // Selected route: subtle clean path backing
+        // Selected route: clean glow base
         const baseGlow = L.polyline(coords, {
           color: '#2563EB',
           weight: 5,
-          opacity: 0.15,
+          opacity: 0.18,
           lineCap: 'round',
           lineJoin: 'round',
         });
@@ -214,20 +246,20 @@ export const RouteMap: React.FC<RouteMapProps> = ({
               fillOpacity: 1,
             });
 
-            // Modern High-Precision Tooltip without emojis
+            // Modern Precision Tooltip without emojis
             const isDarkMap = mapStyle === 'dark' || mapStyle === 'satellite';
             const popupHtml = `
-              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: ${isDarkMap ? '#090D16' : '#FFFFFF'}; color: ${isDarkMap ? '#F8FAFC' : '#0F172A'}; padding: 10px 12px; border-radius: 8px; border: 1px solid ${isDarkMap ? '#1E293B' : '#E2E8F0'}; min-width: 210px;">
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: ${isDarkMap ? '#090D16' : '#FFFFFF'}; color: ${isDarkMap ? '#F8FAFC' : '#0F172A'}; padding: 10px 12px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); min-width: 210px;">
                 <div style="font-size: 11px; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
                   <span style="color: ${isDarkMap ? '#93C5FD' : '#2563EB'}; font-family: monospace;">POINT #${cp.index} • ${cp.distance_from_origin_miles} mi</span>
-                  <span style="background: ${color}18; color: ${color}; border: 1px solid ${color}50; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; font-family: monospace;">
+                  <span style="background: ${color}18; color: ${color}; border: 1px solid ${color}40; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; font-family: monospace;">
                     ${evalRes.overall_level.toUpperCase()}
                   </span>
                 </div>
                 <div style="font-size: 11px; color: ${isDarkMap ? '#94A3B8' : '#64748B'}; margin-bottom: 8px; font-family: monospace;">
                   ETA : <b style="color: ${isDarkMap ? '#FFFFFF' : '#0F172A'};">${new Date(cp.eta).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</b>
                 </div>
-                <div style="font-size: 11px; border-top: 1px solid ${isDarkMap ? '#1E293B' : '#E2E8F0'}; padding-top: 6px; line-height: 1.6;">
+                <div style="font-size: 11px; border-top: 1px solid ${isDarkMap ? '#1E293B' : '#F1F5F9'}; padding-top: 6px; line-height: 1.6;">
                   <div style="display: flex; justify-content: space-between;">
                     <span style="color: ${isDarkMap ? '#94A3B8' : '#64748B'};">Vent :</span>
                     <b style="color: ${isDarkMap ? '#60A5FA' : '#2563EB'}; font-family: monospace;">${cp.weather.wind_mph} mph</b>
@@ -258,14 +290,14 @@ export const RouteMap: React.FC<RouteMapProps> = ({
 
           const originIcon = L.divIcon({
             className: 'custom-pin-a',
-            html: `<div style="background: #2563EB; color: #FFFFFF; font-weight: 700; font-size: 11px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #FFFFFF;">A</div>`,
+            html: `<div style="background: #2563EB; color: #FFFFFF; font-weight: 700; font-size: 11px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.3); border: 2px solid #FFFFFF;">A</div>`,
             iconSize: [22, 22],
             iconAnchor: [11, 11],
           });
 
           const destIcon = L.divIcon({
             className: 'custom-pin-b',
-            html: `<div style="background: #EF4444; color: #FFFFFF; font-weight: 700; font-size: 11px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #FFFFFF;">B</div>`,
+            html: `<div style="background: #EF4444; color: #FFFFFF; font-weight: 700; font-size: 11px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.3); border: 2px solid #FFFFFF;">B</div>`,
             iconSize: [22, 22],
             iconAnchor: [11, 11],
           });
@@ -276,8 +308,11 @@ export const RouteMap: React.FC<RouteMapProps> = ({
       }
     });
 
-    if (allLatLngs.length > 0) {
-      map.fitBounds(allLatLngs, { padding: [45, 45] });
+    // Auto-fit bounds ONLY when new routes are loaded, NOT on route selection or animation tick
+    const currentRouteKey = routes.map((r) => r.id).join(';') + `_${routes.length}`;
+    if (allLatLngs.length > 0 && currentRouteKey !== lastFittedRouteKeyRef.current) {
+      lastFittedRouteKeyRef.current = currentRouteKey;
+      map.fitBounds(allLatLngs, { padding: [45, 45], maxZoom: 12 });
     }
   }, [routes, selectedRouteId, onSelectRoute, onSelectCheckpoint, mapStyle]);
 
@@ -320,20 +355,23 @@ export const RouteMap: React.FC<RouteMapProps> = ({
 
   return (
     <div
-      className={`relative w-full h-[580px] lg:h-[620px] rounded-xl overflow-hidden border transition-colors ${
-        isDark
-          ? 'bg-[#090D16] border-slate-800'
-          : 'bg-white border-slate-200'
+      className={`relative w-full h-[580px] lg:h-[620px] rounded-xl overflow-hidden shadow-sm transition-colors ${
+        isDark ? 'bg-[#0B0F19]' : 'bg-white'
       }`}
     >
-      <div ref={mapContainerRef} className={`w-full h-full ${isDark ? 'bg-[#090D16]' : 'bg-[#F1F5F9]'}`} />
+      <div
+        ref={mapContainerRef}
+        className={`w-full h-full transition-opacity duration-200 ${
+          isDark ? 'bg-[#070A12]' : 'bg-[#F8FAFC]'
+        }`}
+      />
 
       {/* Floating Modern OSRM Navigation Toolbar (Top Left) */}
       <div className="absolute top-3 left-3 z-[1000] flex flex-wrap items-center gap-2">
         {/* Map Views Switcher */}
         <div
-          className={`flex items-center gap-1 p-1 rounded-lg backdrop-blur-md border ${
-            isDark ? 'bg-[#090D16]/90 border-slate-800' : 'bg-white/95 border-slate-200'
+          className={`flex items-center gap-1 p-1 rounded-lg backdrop-blur-md shadow-sm ${
+            isDark ? 'bg-[#090D16]/90' : 'bg-white/95'
           }`}
         >
           {STYLE_BUTTONS.map((v) => {
@@ -343,11 +381,11 @@ export const RouteMap: React.FC<RouteMapProps> = ({
                 key={v.key}
                 type="button"
                 onClick={() => setMapStyle(v.key)}
-                className={`px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 transition ${
+                className={`px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 transition cursor-pointer ${
                   mapStyle === v.key
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-blue-600 text-white shadow-xs'
                     : isDark
-                    ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    ? 'text-slate-400 hover:text-white hover:bg-white/5'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -362,12 +400,12 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         <button
           type="button"
           onClick={handleRecenter}
-          className={`px-2.5 py-1.5 rounded-lg backdrop-blur-md border text-xs transition flex items-center gap-1.5 font-medium ${
+          className={`px-2.5 py-1.5 rounded-lg backdrop-blur-md shadow-sm text-xs transition flex items-center gap-1.5 font-medium cursor-pointer ${
             isDark
-              ? 'bg-[#090D16]/90 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700'
-              : 'bg-white/95 border-slate-200 text-slate-700 hover:text-blue-600'
+              ? 'bg-[#090D16]/90 text-slate-300 hover:text-white hover:bg-white/5'
+              : 'bg-white/95 text-slate-700 hover:text-blue-600 hover:bg-slate-50'
           }`}
-          title="Recadrer sur l'ensemble de l'itinéraire"
+          title="Recadrer sur l'ensemble de l'itineraire"
         >
           <Compass className="w-3.5 h-3.5 text-blue-500" />
           <span className="hidden md:inline">Recadrer</span>
@@ -377,16 +415,16 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         <button
           type="button"
           onClick={onToggleHeatmap}
-          className={`px-2.5 py-1.5 rounded-lg backdrop-blur-md border text-xs transition flex items-center gap-1.5 font-medium ${
+          className={`px-2.5 py-1.5 rounded-lg backdrop-blur-md shadow-sm text-xs transition flex items-center gap-1.5 font-medium cursor-pointer ${
             showHeatmap
               ? isDark
-                ? 'bg-blue-600/15 border-blue-500/40 text-blue-400 font-semibold'
-                : 'bg-blue-50 border-blue-300 text-blue-700 font-semibold'
+                ? 'bg-blue-600/20 text-blue-400 font-semibold'
+                : 'bg-blue-50 text-blue-700 font-semibold'
               : isDark
-              ? 'bg-[#090D16]/90 border-slate-800 text-slate-400 hover:text-white'
-              : 'bg-white/95 border-slate-200 text-slate-600'
+              ? 'bg-[#090D16]/90 text-slate-400 hover:text-white hover:bg-white/5'
+              : 'bg-white/95 text-slate-600 hover:bg-slate-50'
           }`}
-          title="Afficher/Masquer le calque météo dynamique"
+          title="Afficher/Masquer le radar météo dynamique"
         >
           <Layers className="w-3.5 h-3.5 text-blue-500" />
           <span className="hidden md:inline">{showHeatmap ? 'Radar Météo' : 'Radar Masqué'}</span>
@@ -395,16 +433,15 @@ export const RouteMap: React.FC<RouteMapProps> = ({
 
       {/* Floating Status / Telemetry Indicator (Bottom Right) */}
       <div
-        className={`absolute bottom-3 right-3 z-[1000] backdrop-blur-md px-2.5 py-1.5 rounded-lg border text-[11px] font-mono flex items-center gap-2 ${
+        className={`absolute bottom-3 right-3 z-[1000] backdrop-blur-md px-2.5 py-1.5 rounded-lg shadow-sm text-[11px] font-mono flex items-center gap-2 ${
           isDark
-            ? 'bg-[#090D16]/90 border-slate-800 text-slate-300'
-            : 'bg-white/95 border-slate-200 text-slate-700'
+            ? 'bg-[#090D16]/90 text-slate-300'
+            : 'bg-white/95 text-slate-700'
         }`}
       >
-        <span className="w-2 h-2 rounded-full bg-blue-500" />
+        <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
         <span>Corridor Temps Réel • OSRM + Open-Meteo</span>
       </div>
     </div>
   );
 };
-
