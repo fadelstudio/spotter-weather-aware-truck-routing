@@ -399,4 +399,4 @@ When recording the submission walkthrough, follow this structured presentation:
 Full Stack & Software Engineer  
 - **Email**: [falloucheikh2003@gmail.com](mailto:falloucheikh2003@gmail.com)  
 - **Portfolio**: [byfadel.digital](https://byfadel.digital)  
-- **GitHub**: [github.com/cheikhfadeldiop](https://github.com/cheikhfadeldiop)
+- **GitHub**: [github.com/fadelstudio](https://github.com/fadelstudio/)

@@ -85,3 +85,4 @@ The top-ranked route is awarded the **"Recommended"** badge.
   - Routing: OSRM (Open Source Routing Machine).
   - Weather: Open-Meteo API (hourly synchronized forecasts).
   - Geocoding: Nominatim OpenStreetMap.
+
