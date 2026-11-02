@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { RouteOption, Checkpoint, CorridorHeatmap } from '../types';
-import { Maximize2, Layers, Eye, Compass } from 'lucide-react';
+import { Layers, Compass, Moon, Sun, Globe, Map } from 'lucide-react';
 
 declare const L: any;
 
@@ -40,6 +40,13 @@ const TILE_PROVIDERS: Record<MapViewStyle, { url: string; maxZoom: number; subdo
     subdomains: ['a', 'b', 'c'],
   },
 };
+
+const STYLE_BUTTONS = [
+  { key: 'dark', label: 'Sombre', icon: Moon },
+  { key: 'light', label: 'Clair', icon: Sun },
+  { key: 'satellite', label: 'Satellite', icon: Globe },
+  { key: 'navigation', label: 'Routes', icon: Map },
+] as const;
 
 export const RouteMap: React.FC<RouteMapProps> = ({
   routes,
@@ -151,20 +158,20 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         // Alternative routes: sleek subtle dashed line
         const altPolyline = L.polyline(coords, {
           color: mapStyle === 'dark' || mapStyle === 'satellite' ? '#64748B' : '#94A3B8',
-          weight: 2.5,
-          dashArray: '6, 8',
-          opacity: 0.65,
+          weight: 2,
+          dashArray: '5, 8',
+          opacity: 0.5,
           lineCap: 'round',
           lineJoin: 'round',
         });
         altPolyline.on('click', () => onSelectRoute(route.id));
         layers.addLayer(altPolyline);
       } else {
-        // Selected route: ambient neon halo
+        // Selected route: subtle clean path backing
         const baseGlow = L.polyline(coords, {
           color: '#2563EB',
-          weight: 7,
-          opacity: 0.22,
+          weight: 5,
+          opacity: 0.15,
           lineCap: 'round',
           lineJoin: 'round',
         });
@@ -184,7 +191,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
               ],
               {
                 color: segColor,
-                weight: 4,
+                weight: 3.5,
                 opacity: 0.95,
                 lineCap: 'round',
               }
@@ -199,7 +206,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
             const isDanger = evalRes.overall_score >= 4;
 
             const marker = L.circleMarker([cp.lat, cp.lng], {
-              radius: isDanger ? 6.5 : 4.5,
+              radius: isDanger ? 5.5 : 4,
               fillColor: color,
               color: '#FFFFFF',
               weight: 1.5,
@@ -207,33 +214,34 @@ export const RouteMap: React.FC<RouteMapProps> = ({
               fillOpacity: 1,
             });
 
-            // Modern High-Precision Tooltip
+            // Modern High-Precision Tooltip without emojis
+            const isDarkMap = mapStyle === 'dark' || mapStyle === 'satellite';
             const popupHtml = `
-              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0B0F19; color: #F8FAFC; padding: 10px 12px; border-radius: 10px; border: 1px solid #1E293B; min-width: 200px; box-shadow: 0 14px 30px rgba(0,0,0,0.5);">
-                <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
-                  <span style="color: #93C5FD; font-family: monospace;">POINT #${cp.index} • ${cp.distance_from_origin_miles} mi</span>
-                  <span style="background: ${color}25; color: ${color}; border: 1px solid ${color}60; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 800;">
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: ${isDarkMap ? '#090D16' : '#FFFFFF'}; color: ${isDarkMap ? '#F8FAFC' : '#0F172A'}; padding: 10px 12px; border-radius: 8px; border: 1px solid ${isDarkMap ? '#1E293B' : '#E2E8F0'}; min-width: 210px;">
+                <div style="font-size: 11px; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                  <span style="color: ${isDarkMap ? '#93C5FD' : '#2563EB'}; font-family: monospace;">POINT #${cp.index} • ${cp.distance_from_origin_miles} mi</span>
+                  <span style="background: ${color}18; color: ${color}; border: 1px solid ${color}50; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; font-family: monospace;">
                     ${evalRes.overall_level.toUpperCase()}
                   </span>
                 </div>
-                <div style="font-size: 11px; color: #94A3B8; margin-bottom: 8px;">
-                  🕒 Arrivée Prévue (ETA) : <b style="color: #FFFFFF;">${new Date(cp.eta).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</b>
+                <div style="font-size: 11px; color: ${isDarkMap ? '#94A3B8' : '#64748B'}; margin-bottom: 8px; font-family: monospace;">
+                  ETA : <b style="color: ${isDarkMap ? '#FFFFFF' : '#0F172A'};">${new Date(cp.eta).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</b>
                 </div>
-                <div style="font-size: 11px; border-top: 1px solid #1E293B; padding-top: 6px; line-height: 1.6;">
+                <div style="font-size: 11px; border-top: 1px solid ${isDarkMap ? '#1E293B' : '#E2E8F0'}; padding-top: 6px; line-height: 1.6;">
                   <div style="display: flex; justify-content: space-between;">
-                    <span>💨 Vitesse Vent :</span>
-                    <b style="color: #60A5FA;">${cp.weather.wind_mph} mph</b>
+                    <span style="color: ${isDarkMap ? '#94A3B8' : '#64748B'};">Vent :</span>
+                    <b style="color: ${isDarkMap ? '#60A5FA' : '#2563EB'}; font-family: monospace;">${cp.weather.wind_mph} mph</b>
                   </div>
                   <div style="display: flex; justify-content: space-between;">
-                    <span>🌧️ Précipitation :</span>
-                    <b style="color: #93C5FD;">${cp.weather.rain_in_hr} in/h</b>
+                    <span style="color: ${isDarkMap ? '#94A3B8' : '#64748B'};">Pluie :</span>
+                    <b style="color: ${isDarkMap ? '#93C5FD' : '#0284C7'}; font-family: monospace;">${cp.weather.rain_in_hr} in/h</b>
                   </div>
                   <div style="display: flex; justify-content: space-between;">
-                    <span>❄️ Chute de Neige :</span>
-                    <b style="color: #E2E8F0;">${cp.weather.snow_in_hr} in/h</b>
+                    <span style="color: ${isDarkMap ? '#94A3B8' : '#64748B'};">Neige :</span>
+                    <b style="color: ${isDarkMap ? '#E2E8F0' : '#475569'}; font-family: monospace;">${cp.weather.snow_in_hr} in/h</b>
                   </div>
                 </div>
-                <div style="font-size: 10px; color: #F1F5F9; margin-top: 7px; background: #111827; padding: 5px 8px; border-radius: 6px; border-left: 3px solid ${color};">
+                <div style="font-size: 10.5px; color: ${isDarkMap ? '#F1F5F9' : '#0F172A'}; margin-top: 7px; background: ${isDarkMap ? '#0F172A' : '#F8FAFC'}; padding: 6px 8px; border-radius: 6px; border-left: 3px solid ${color};">
                   ${evalRes.primary_hazard}
                 </div>
               </div>
@@ -250,16 +258,16 @@ export const RouteMap: React.FC<RouteMapProps> = ({
 
           const originIcon = L.divIcon({
             className: 'custom-pin-a',
-            html: `<div style="background: #2563EB; color: #FFFFFF; font-weight: 800; font-size: 11px; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #FFFFFF; box-shadow: 0 0 12px rgba(37,99,235,0.7);">A</div>`,
-            iconSize: [24, 24],
-            iconAnchor: [12, 12],
+            html: `<div style="background: #2563EB; color: #FFFFFF; font-weight: 700; font-size: 11px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #FFFFFF;">A</div>`,
+            iconSize: [22, 22],
+            iconAnchor: [11, 11],
           });
 
           const destIcon = L.divIcon({
             className: 'custom-pin-b',
-            html: `<div style="background: #EF4444; color: #FFFFFF; font-weight: 800; font-size: 11px; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #FFFFFF; box-shadow: 0 0 12px rgba(239,68,68,0.7);">B</div>`,
-            iconSize: [24, 24],
-            iconAnchor: [12, 12],
+            html: `<div style="background: #EF4444; color: #FFFFFF; font-weight: 700; font-size: 11px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #FFFFFF;">B</div>`,
+            iconSize: [22, 22],
+            iconAnchor: [11, 11],
           });
 
           layers.addLayer(L.marker([originCp.lat, originCp.lng], { icon: originIcon, zIndexOffset: 1000 }));
@@ -296,9 +304,9 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         else if (forecast.risk_score >= 4) color = '#EF4444';
 
         const circle = L.circle([pt.lat, pt.lng], {
-          radius: 32000 + forecast.intensity * 22000,
+          radius: 30000 + forecast.intensity * 20000,
           fillColor: color,
-          fillOpacity: 0.18 + forecast.intensity * 0.28,
+          fillOpacity: 0.16 + forecast.intensity * 0.24,
           stroke: false,
           interactive: false,
         });
@@ -312,56 +320,52 @@ export const RouteMap: React.FC<RouteMapProps> = ({
 
   return (
     <div
-      className={`relative w-full h-[580px] lg:h-[620px] rounded-2xl overflow-hidden border transition-all duration-200 shadow-2xl ${
+      className={`relative w-full h-[580px] lg:h-[620px] rounded-xl overflow-hidden border transition-colors ${
         isDark
-          ? 'bg-[#0B0F19] border-blue-900/30 shadow-blue-950/20'
-          : 'bg-white border-slate-200 shadow-slate-200'
+          ? 'bg-[#090D16] border-slate-800'
+          : 'bg-white border-slate-200'
       }`}
     >
-      <div ref={mapContainerRef} className="w-full h-full" />
+      <div ref={mapContainerRef} className={`w-full h-full ${isDark ? 'bg-[#090D16]' : 'bg-[#F1F5F9]'}`} />
 
       {/* Floating Modern OSRM Navigation Toolbar (Top Left) */}
-      <div className="absolute top-3.5 left-3.5 z-[1000] flex flex-wrap items-center gap-2">
+      <div className="absolute top-3 left-3 z-[1000] flex flex-wrap items-center gap-2">
         {/* Map Views Switcher */}
         <div
-          className={`flex items-center gap-1 p-1 rounded-xl backdrop-blur-md border shadow-lg ${
-            isDark ? 'bg-[#0B0F19]/90 border-slate-800' : 'bg-white/95 border-slate-200'
+          className={`flex items-center gap-1 p-1 rounded-lg backdrop-blur-md border ${
+            isDark ? 'bg-[#090D16]/90 border-slate-800' : 'bg-white/95 border-slate-200'
           }`}
         >
-          {(
-            [
-              { key: 'dark', label: 'Sombre', icon: '🌃' },
-              { key: 'light', label: 'Clair', icon: '☀️' },
-              { key: 'satellite', label: 'Satellite', icon: '🛰️' },
-              { key: 'navigation', label: 'Routes', icon: '🛣️' },
-            ] as const
-          ).map((v) => (
-            <button
-              key={v.key}
-              type="button"
-              onClick={() => setMapStyle(v.key)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition ${
-                mapStyle === v.key
-                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-900/40'
-                  : isDark
-                  ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              <span>{v.icon}</span>
-              <span className="hidden sm:inline">{v.label}</span>
-            </button>
-          ))}
+          {STYLE_BUTTONS.map((v) => {
+            const Icon = v.icon;
+            return (
+              <button
+                key={v.key}
+                type="button"
+                onClick={() => setMapStyle(v.key)}
+                className={`px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 transition ${
+                  mapStyle === v.key
+                    ? 'bg-blue-600 text-white'
+                    : isDark
+                    ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{v.label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Recenter button */}
         <button
           type="button"
           onClick={handleRecenter}
-          className={`p-2 rounded-xl backdrop-blur-md border shadow-lg text-xs transition flex items-center gap-1.5 font-medium ${
+          className={`px-2.5 py-1.5 rounded-lg backdrop-blur-md border text-xs transition flex items-center gap-1.5 font-medium ${
             isDark
-              ? 'bg-[#0B0F19]/90 border-slate-800 text-slate-300 hover:text-white hover:border-blue-500/50'
-              : 'bg-white/95 border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-400'
+              ? 'bg-[#090D16]/90 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700'
+              : 'bg-white/95 border-slate-200 text-slate-700 hover:text-blue-600'
           }`}
           title="Recadrer sur l'ensemble de l'itinéraire"
         >
@@ -373,31 +377,34 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         <button
           type="button"
           onClick={onToggleHeatmap}
-          className={`p-2 rounded-xl backdrop-blur-md border shadow-lg text-xs transition flex items-center gap-1.5 font-medium ${
+          className={`px-2.5 py-1.5 rounded-lg backdrop-blur-md border text-xs transition flex items-center gap-1.5 font-medium ${
             showHeatmap
-              ? 'bg-blue-600/20 border-blue-500 text-blue-400 font-bold'
+              ? isDark
+                ? 'bg-blue-600/15 border-blue-500/40 text-blue-400 font-semibold'
+                : 'bg-blue-50 border-blue-300 text-blue-700 font-semibold'
               : isDark
-              ? 'bg-[#0B0F19]/90 border-slate-800 text-slate-400 hover:text-white'
+              ? 'bg-[#090D16]/90 border-slate-800 text-slate-400 hover:text-white'
               : 'bg-white/95 border-slate-200 text-slate-600'
           }`}
           title="Afficher/Masquer le calque météo dynamique"
         >
           <Layers className="w-3.5 h-3.5 text-blue-500" />
-          <span className="hidden md:inline">{showHeatmap ? 'Radar Météo Actif' : 'Radar Masqué'}</span>
+          <span className="hidden md:inline">{showHeatmap ? 'Radar Météo' : 'Radar Masqué'}</span>
         </button>
       </div>
 
       {/* Floating Status / Telemetry Indicator (Bottom Right) */}
       <div
-        className={`absolute bottom-3.5 right-3.5 z-[1000] backdrop-blur-md px-3 py-1.5 rounded-xl border text-[11px] font-mono flex items-center gap-2 shadow-lg ${
+        className={`absolute bottom-3 right-3 z-[1000] backdrop-blur-md px-2.5 py-1.5 rounded-lg border text-[11px] font-mono flex items-center gap-2 ${
           isDark
-            ? 'bg-[#0B0F19]/90 border-slate-800 text-slate-300'
+            ? 'bg-[#090D16]/90 border-slate-800 text-slate-300'
             : 'bg-white/95 border-slate-200 text-slate-700'
         }`}
       >
-        <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+        <span className="w-2 h-2 rounded-full bg-blue-500" />
         <span>Corridor Temps Réel • OSRM + Open-Meteo</span>
       </div>
     </div>
   );
 };
+

@@ -74,26 +74,26 @@ export const App: React.FC = () => {
   return (
     <div
       className={`min-h-screen flex flex-col font-sans transition-colors duration-200 antialiased ${
-        isDark ? 'bg-[#070A12] text-slate-100' : 'bg-[#F8FAFC] text-slate-900'
+        isDark ? 'bg-[#090D16] text-slate-100' : 'bg-[#F8FAFC] text-slate-900'
       }`}
     >
       {/* 1. Header Cockpit Topbar */}
       <header
         className={`sticky top-0 z-50 px-4 sm:px-6 py-2.5 border-b backdrop-blur-md flex items-center justify-between gap-4 transition-colors ${
           isDark
-            ? 'bg-[#0B0F19]/90 border-blue-900/30 shadow-sm shadow-black/40'
-            : 'bg-white/95 border-slate-200 shadow-sm'
+            ? 'bg-[#090D16]/95 border-slate-800'
+            : 'bg-white/95 border-slate-200'
         }`}
       >
         {/* Left Branding */}
         <div className="flex items-center gap-3">
-          <div className="bg-blue-600 text-white p-2 rounded-xl shadow-md shadow-blue-600/30 flex items-center justify-center">
+          <div className="bg-blue-600 text-white p-2 rounded-lg flex items-center justify-center">
             <Truck className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm tracking-tight">Spotter AI</span>
-              <span className="text-[10px] bg-blue-500/15 text-blue-500 font-mono font-bold px-2 py-0.5 rounded-full border border-blue-500/30">
+              <span className="text-[10px] bg-blue-500/10 text-blue-400 font-mono font-medium px-2 py-0.5 rounded border border-blue-500/20">
                 Weather-Aware Routing
               </span>
             </div>
@@ -109,9 +109,9 @@ export const App: React.FC = () => {
           <button
             type="button"
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition cursor-pointer ${
               isDark
-                ? 'bg-slate-900 hover:bg-slate-800 text-blue-400 border-slate-800'
+                ? 'bg-slate-900/80 hover:bg-slate-800 text-blue-400 border-slate-800'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
             }`}
             title="Basculer Mode Clair / Sombre"
@@ -131,7 +131,7 @@ export const App: React.FC = () => {
 
           {/* Candidate Badge */}
           <div
-            className={`hidden md:flex items-center gap-2 font-mono text-[11px] px-3 py-1.5 rounded-xl border ${
+            className={`hidden md:flex items-center gap-2 font-mono text-[11px] px-3 py-1.5 rounded-lg border ${
               isDark ? 'bg-slate-900/60 border-slate-800 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700'
             }`}
           >
@@ -144,9 +144,9 @@ export const App: React.FC = () => {
             href="https://github.com/cheikhfadeldiop"
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition ${
               isDark
-                ? 'bg-slate-900 hover:bg-slate-800 text-slate-200 border-slate-800'
+                ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-slate-800'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200'
             }`}
           >
@@ -230,27 +230,67 @@ export const App: React.FC = () => {
               theme={theme}
             />
 
-            {/* Truck Rule Summary Pill */}
+            {/* Truck Rule Summary Card */}
             <div
               className={`rounded-xl p-3.5 border transition-all text-xs font-mono ${
                 isDark
-                  ? 'bg-[#0B0F19] border-blue-900/30 text-slate-300'
-                  : 'bg-white border-slate-200 text-slate-700 shadow-sm'
+                  ? 'bg-[#0B0F19] border-slate-800 text-slate-300'
+                  : 'bg-white border-slate-200 text-slate-700'
               }`}
             >
-              <div className="flex items-center justify-between pb-2 mb-2 border-b border-dashed border-blue-500/20 text-[11px] font-bold uppercase text-blue-500">
+              <div
+                className={`flex items-center justify-between pb-2 mb-2 border-b border-dashed text-[11px] font-bold uppercase text-blue-500 ${
+                  isDark ? 'border-slate-800' : 'border-slate-200'
+                }`}
+              >
                 <span>Règles de Basculement au Vent</span>
-                <span className="text-[10px] text-slate-400">Spotter AI</span>
+                <span className={`text-[10px] font-mono ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Spotter AI</span>
               </div>
-              <ul className="space-y-1 text-[10px] leading-relaxed">
-                <li>• Vent $\ge$ 55 mph $\rightarrow$ <strong>No Travel</strong> (Tout poids)</li>
-                <li>• Vent 45–54 mph + &gt;30 000 lbs $\rightarrow$ <strong className="text-red-400">No Travel</strong></li>
-                <li>• Vent 35–44 mph + &gt;40 000 lbs $\rightarrow$ <strong className="text-amber-400">Sévère</strong></li>
-              </ul>
+              <div className="space-y-1.5 text-[10.5px]">
+                <div
+                  className={`flex items-center justify-between p-2 rounded-lg border transition-colors ${
+                    isDark ? 'bg-slate-900/50 border-slate-800/80' : 'bg-slate-50 border-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 font-medium">
+                    <span>Vent ≥ 55 mph <span className="text-slate-500 text-[10px]">(Tout poids)</span></span>
+                    <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>→</span>
+                  </div>
+                  <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold font-mono bg-red-500/15 text-red-400 border border-red-500/30">
+                    No Travel
+                  </span>
+                </div>
+                <div
+                  className={`flex items-center justify-between p-2 rounded-lg border transition-colors ${
+                    isDark ? 'bg-slate-900/50 border-slate-800/80' : 'bg-slate-50 border-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 font-medium">
+                    <span>Vent 45–54 mph + &gt;30 000 lbs</span>
+                    <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>→</span>
+                  </div>
+                  <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold font-mono bg-red-500/15 text-red-400 border border-red-500/30">
+                    No Travel
+                  </span>
+                </div>
+                <div
+                  className={`flex items-center justify-between p-2 rounded-lg border transition-colors ${
+                    isDark ? 'bg-slate-900/50 border-slate-800/80' : 'bg-slate-50 border-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 font-medium">
+                    <span>Vent 35–44 mph + &gt;40 000 lbs</span>
+                    <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>→</span>
+                  </div>
+                  <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold font-mono bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                    Sévère
+                  </span>
+                </div>
+              </div>
             </div>
 
             {error && (
-              <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-500 rounded-xl text-xs font-mono">
+              <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl text-xs font-mono">
                 <strong>Notice:</strong> {error}
               </div>
             )}
@@ -311,9 +351,9 @@ export const App: React.FC = () => {
 
       {/* Footer minimaliste */}
       <footer
-        className={`border-t py-2.5 px-6 text-center text-[10px] font-mono transition-colors ${
+        className={`border-t py-3 px-6 text-center text-[10px] font-mono transition-colors ${
           isDark
-            ? 'border-blue-900/20 bg-[#070A12] text-slate-500'
+            ? 'border-slate-800/80 bg-[#090D16] text-slate-500'
             : 'border-slate-200 bg-slate-50 text-slate-500'
         }`}
       >

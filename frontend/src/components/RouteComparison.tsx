@@ -43,19 +43,19 @@ export const RouteComparison: React.FC<RouteComparisonProps> = ({
             <div
               key={route.id}
               onClick={() => onSelectRoute(route.id)}
-              className={`relative rounded-xl p-3.5 border transition-all cursor-pointer flex flex-col justify-between ${
+              className={`relative rounded-xl p-3.5 border transition-colors cursor-pointer flex flex-col justify-between ${
                 isSelected
                   ? isDark
-                    ? 'bg-[#0E1526] border-blue-500 shadow-lg shadow-blue-950/50 ring-1 ring-blue-500/60'
-                    : 'bg-blue-50/50 border-blue-500 shadow-md ring-1 ring-blue-400'
+                    ? 'bg-[#0E1726] border-slate-700 border-l-2 border-l-blue-500'
+                    : 'bg-blue-50/50 border-blue-200 border-l-2 border-l-blue-600'
                   : isDark
-                  ? 'bg-[#0B0F19] border-slate-800/90 hover:border-slate-700 hover:bg-[#0F172A]'
-                  : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'bg-[#0B0F19] border-slate-800 hover:border-slate-700 hover:bg-[#0D1424]'
+                  : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/70'
               }`}
             >
               {/* Badge Recommended */}
               {route.is_recommended && (
-                <div className="absolute -top-2.5 right-3 bg-blue-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md uppercase tracking-wider border border-blue-400">
+                <div className="absolute -top-2.5 right-3 bg-blue-600 text-white text-[9px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 uppercase tracking-wider">
                   <Star className="w-2.5 h-2.5 fill-white" /> Recommandé
                 </div>
               )}

@@ -18,18 +18,25 @@
   background: #334155;
 }
 
-/* Leaflet Customizations */
+/* Leaflet Customizations - Clean flat styling */
 .leaflet-container {
-  background-color: #020617 !important;
+  background: transparent !important;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #ffffff !important;
-  border-radius: 12px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
-  padding: 4px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 10px !important;
 }
 
-.leaflet-popup-tip {
-  background: #ffffff !important;
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.4 !important;
 }
+
+.leaflet-popup-tip-container {
+  display: none !important;
+}
+

@@ -42,10 +42,10 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
 
   return (
     <div
-      className={`rounded-xl p-4 border transition-colors shadow-xl ${
+      className={`rounded-xl p-4 border transition-colors ${
         isDark
-          ? 'bg-[#0B0F19] border-blue-900/30 text-slate-100 shadow-blue-950/10'
-          : 'bg-white border-slate-200 text-slate-900 shadow-slate-200/50'
+          ? 'bg-[#0B0F19] border-slate-800 text-slate-100'
+          : 'bg-white border-slate-200 text-slate-900'
       }`}
     >
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3">
@@ -53,21 +53,23 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
           <button
             type="button"
             onClick={onToggleHeatmap}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition ${
               showHeatmap
-                ? 'bg-blue-600/20 border-blue-500 text-blue-400'
+                ? isDark
+                  ? 'bg-blue-600/15 border-blue-500/50 text-blue-400 font-semibold'
+                  : 'bg-blue-50 border-blue-300 text-blue-700 font-semibold'
                 : isDark
-                ? 'bg-slate-900 border-slate-800 text-slate-400'
+                ? 'bg-slate-900/60 border-slate-800 text-slate-400'
                 : 'bg-slate-100 border-slate-200 text-slate-600'
             }`}
           >
-            <Layers className="w-3.5 h-3.5" />
-            {showHeatmap ? 'Calque Météo Corridor Actif' : 'Calque Météo Masqué'}
+            <Layers className="w-3.5 h-3.5 text-blue-500" />
+            {showHeatmap ? 'Calque Météo Actif' : 'Calque Météo Masqué'}
           </button>
 
           <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            Horizon Prévisionnel :{' '}
-            <strong className="text-blue-500 font-mono">T+{selectedHour} Heures</strong>
+            Horizon :{' '}
+            <strong className="text-blue-500 font-mono">T+{selectedHour}h</strong>
           </span>
         </div>
 
@@ -76,10 +78,10 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
           <button
             type="button"
             onClick={() => setIsPlaying(!isPlaying)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border transition ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider border transition ${
               isDark
-                ? 'bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border-blue-500/40'
-                : 'bg-blue-50 hover:bg-blue-100 text-blue-600 border-blue-300'
+                ? 'bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border-blue-500/40'
+                : 'bg-blue-50 hover:bg-blue-100 text-blue-600 border-blue-200'
             }`}
           >
             {isPlaying ? (
@@ -101,7 +103,7 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
             }}
             className={`p-1.5 rounded-lg border transition ${
               isDark
-                ? 'bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border-slate-800'
+                ? 'bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-white border-slate-800'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border-slate-200'
             }`}
             title="Réinitialiser à T+0"
@@ -127,7 +129,7 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
             );
             onHourChange(closest);
           }}
-          className="w-full accent-blue-600 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+          className={`w-full accent-blue-600 cursor-pointer h-1.5 rounded-lg ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`}
         />
 
         {/* Ticks */}
@@ -162,7 +164,7 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
         <span className="font-semibold uppercase tracking-wider">Légende Risque :</span>
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block shadow-sm shadow-blue-500/50" /> Faible
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Faible
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block" /> Modéré
@@ -171,7 +173,7 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
             <span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" /> Élevé
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block shadow-sm shadow-red-500/50" /> Sévère
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" /> Sévère
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-red-950 border border-red-500 inline-block" /> No Travel

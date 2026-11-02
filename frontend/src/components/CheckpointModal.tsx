@@ -19,20 +19,20 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
   const evalRes = checkpoint.risk_evaluation;
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[2000] flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-[2000] flex items-center justify-center p-4">
       <div
-        className={`border rounded-2xl max-w-md w-full p-5 shadow-2xl relative transition-all animate-in fade-in zoom-in-95 duration-150 ${
+        className={`border rounded-xl max-w-md w-full p-5 relative transition-all animate-in fade-in zoom-in-95 duration-150 ${
           isDark
-            ? 'bg-[#0B0F19] border-blue-900/40 text-slate-100 shadow-blue-950/40'
-            : 'bg-white border-slate-200 text-slate-900 shadow-slate-300'
+            ? 'bg-[#0B0F19] border-slate-800 text-slate-100'
+            : 'bg-white border-slate-200 text-slate-900'
         }`}
       >
         <button
           onClick={onClose}
           className={`absolute top-4 right-4 p-1.5 rounded-lg transition ${
             isDark
-              ? 'text-slate-400 hover:text-white hover:bg-slate-800'
-              : 'text-slate-500 hover:text-black hover:bg-slate-100'
+              ? 'text-slate-400 hover:text-white hover:bg-slate-800/80'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <X className="w-4 h-4" />
@@ -40,13 +40,13 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
 
         <div className="flex items-center gap-3 mb-4">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center font-mono font-bold text-white shadow-md"
+            className="w-9 h-9 rounded-lg flex items-center justify-center font-mono font-bold text-white text-sm"
             style={{ backgroundColor: evalRes.overall_color }}
           >
             {evalRes.overall_score}
           </div>
           <div>
-            <h3 className="font-bold text-sm tracking-wide">
+            <h3 className="font-semibold text-sm tracking-wide">
               Point de Contrôle #{checkpoint.index} — Mile {checkpoint.distance_from_origin_miles}
             </h3>
             <p className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -136,13 +136,13 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
 
         {/* Primary Hazard message */}
         <div
-          className={`mt-4 p-3 rounded-xl border text-xs ${
+          className={`mt-4 p-3 rounded-lg border text-xs ${
             isDark
-              ? 'bg-blue-950/20 border-blue-900/40 text-slate-300'
-              : 'bg-blue-50/60 border-blue-200 text-slate-800'
+              ? 'bg-slate-900/50 border-slate-800 text-slate-300'
+              : 'bg-slate-50 border-slate-200 text-slate-800'
           }`}
         >
-          <strong className="text-blue-500 block mb-0.5 uppercase tracking-wider text-[10px]">
+          <strong className={`block mb-0.5 uppercase tracking-wider text-[10px] ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
             Synthèse d'Avertissement :
           </strong>
           {evalRes.primary_hazard}
@@ -150,7 +150,7 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
 
         <button
           onClick={onClose}
-          className="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-wider py-2.5 rounded-xl transition shadow-md shadow-blue-600/20 cursor-pointer"
+          className="mt-4 w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold uppercase tracking-wider py-2.5 rounded-lg transition cursor-pointer"
         >
           Fermer l'Inspection
         </button>

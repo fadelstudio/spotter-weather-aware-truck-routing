@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigation, Calendar, Weight, Sliders, Play, RotateCcw } from 'lucide-react';
+import { Navigation, Calendar, Weight, Sliders, Play, RotateCcw, Globe, Zap } from 'lucide-react';
 
 interface RouteFormProps {
   origin: string;
@@ -67,18 +67,18 @@ export const RouteForm: React.FC<RouteFormProps> = ({
 
   return (
     <div
-      className={`rounded-xl p-5 border transition-all shadow-xl ${
+      className={`rounded-xl p-5 border transition-colors ${
         isDark
-          ? 'bg-[#0B0F19] border-blue-900/30 text-slate-100 shadow-blue-950/10'
-          : 'bg-white border-slate-200 text-slate-900 shadow-slate-200/50'
+          ? 'bg-[#0B0F19] border-slate-800 text-slate-100'
+          : 'bg-white border-slate-200 text-slate-900'
       }`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 mb-4 border-b border-dashed border-blue-500/20">
-        <h2 className="text-sm font-bold flex items-center gap-2 text-blue-500 tracking-wide uppercase">
+      <div className={`flex items-center justify-between pb-3 mb-4 border-b border-dashed ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+        <h2 className="text-sm font-semibold flex items-center gap-2 text-blue-500 tracking-wide uppercase">
           <Navigation className="w-4 h-4" /> Paramètres d'Itinéraire
         </h2>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-blue-500/30 text-blue-400 bg-blue-500/10">
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-blue-500/20 text-blue-400 bg-blue-500/10">
           Spotter AI v2.0
         </span>
       </div>
@@ -103,14 +103,14 @@ export const RouteForm: React.FC<RouteFormProps> = ({
                 setLoadWeight(p.weight);
                 setWeatherMode(p.mode);
               }}
-              className={`p-2 rounded-lg text-left border transition-all text-xs flex flex-col justify-between ${
+              className={`p-2 rounded-lg text-left border transition-colors text-xs flex flex-col justify-between ${
                 isDark
-                  ? 'bg-slate-900/60 hover:bg-blue-950/40 border-slate-800 hover:border-blue-500/40 text-slate-200'
-                  : 'bg-slate-50 hover:bg-blue-50/50 border-slate-200 hover:border-blue-400 text-slate-800'
+                  ? 'bg-slate-900/50 hover:bg-slate-800/80 border-slate-800 hover:border-slate-700 text-slate-200'
+                  : 'bg-slate-50 hover:bg-slate-100 border-slate-200 hover:border-slate-300 text-slate-800'
               }`}
             >
-              <span className="font-semibold truncate">{p.name}</span>
-              <span className="text-[9px] text-blue-400 font-mono mt-0.5 truncate">{p.subtitle}</span>
+              <span className="font-medium truncate">{p.name}</span>
+              <span className={`text-[9px] font-mono mt-0.5 truncate ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>{p.subtitle}</span>
             </button>
           ))}
         </div>
@@ -133,10 +133,10 @@ export const RouteForm: React.FC<RouteFormProps> = ({
               onChange={(e) => setOrigin(e.target.value)}
               placeholder="ex: Chicago, IL"
               required
-              className={`w-full rounded-lg px-3 py-2 text-xs font-medium border transition focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+              className={`w-full rounded-lg px-3 py-2 text-xs font-medium border transition focus:outline-none focus:border-blue-500 ${
                 isDark
-                  ? 'bg-[#070A12] border-slate-800 text-white focus:border-blue-500'
-                  : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-blue-500'
+                  ? 'bg-[#070A12] border-slate-800 text-white'
+                  : 'bg-slate-50 border-slate-200 text-slate-900'
               }`}
             />
           </div>
@@ -154,10 +154,10 @@ export const RouteForm: React.FC<RouteFormProps> = ({
               onChange={(e) => setDestination(e.target.value)}
               placeholder="ex: Denver, CO"
               required
-              className={`w-full rounded-lg px-3 py-2 text-xs font-medium border transition focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+              className={`w-full rounded-lg px-3 py-2 text-xs font-medium border transition focus:outline-none focus:border-blue-500 ${
                 isDark
-                  ? 'bg-[#070A12] border-slate-800 text-white focus:border-blue-500'
-                  : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-blue-500'
+                  ? 'bg-[#070A12] border-slate-800 text-white'
+                  : 'bg-slate-50 border-slate-200 text-slate-900'
               }`}
             />
           </div>
@@ -177,10 +177,10 @@ export const RouteForm: React.FC<RouteFormProps> = ({
             value={departureTime}
             onChange={(e) => setDepartureTime(e.target.value)}
             required
-            className={`w-full rounded-lg px-3 py-2 text-xs font-medium border transition focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+            className={`w-full rounded-lg px-3 py-2 text-xs font-medium border transition focus:outline-none focus:border-blue-500 ${
               isDark
-                ? 'bg-[#070A12] border-slate-800 text-white focus:border-blue-500'
-                : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-blue-500'
+                ? 'bg-[#070A12] border-slate-800 text-white'
+                : 'bg-slate-50 border-slate-200 text-slate-900'
             }`}
           />
         </div>
@@ -195,10 +195,10 @@ export const RouteForm: React.FC<RouteFormProps> = ({
             >
               <Weight className="w-3.5 h-3.5 text-blue-500" /> Charge transportée
             </label>
-            <span className="text-xs font-mono font-bold text-blue-400">
+            <span className={`text-xs font-mono font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
               {loadWeight.toLocaleString()} lbs
               {loadWeight > 40000 && (
-                <span className="text-red-500 ml-1.5 font-sans font-medium text-[10px]">
+                <span className={`ml-1.5 font-sans font-medium text-[10px] ${isDark ? 'text-red-400' : 'text-red-600'}`}>
                   (Sensibilité Vent : Sévère)
                 </span>
               )}
@@ -211,12 +211,12 @@ export const RouteForm: React.FC<RouteFormProps> = ({
             step="1000"
             value={loadWeight}
             onChange={(e) => setLoadWeight(Number(e.target.value))}
-            className="w-full accent-blue-600 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+            className={`w-full accent-blue-600 cursor-pointer h-1.5 rounded-lg ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`}
           />
-          <div className="flex justify-between text-[9px] text-slate-500 font-mono mt-1">
+          <div className={`flex justify-between text-[9px] font-mono mt-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
             <span>5k lb</span>
-            <span className="text-amber-500">30k seuil</span>
-            <span className="text-red-500">40k seuil</span>
+            <span className={isDark ? 'text-amber-400' : 'text-amber-600'}>30k seuil</span>
+            <span className={isDark ? 'text-red-400' : 'text-red-600'}>40k seuil</span>
             <span>60k lb</span>
           </div>
         </div>
@@ -238,7 +238,7 @@ export const RouteForm: React.FC<RouteFormProps> = ({
                 onClick={() => setSamplingInterval(step)}
                 className={`py-1.5 text-xs rounded-lg border font-medium transition ${
                   samplingInterval === step
-                    ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-900/30 font-semibold'
+                    ? 'bg-blue-600 text-white border-blue-500 font-semibold'
                     : isDark
                     ? 'bg-[#070A12] border-slate-800 text-slate-400 hover:border-slate-700'
                     : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'
@@ -258,7 +258,7 @@ export const RouteForm: React.FC<RouteFormProps> = ({
             }`}
           >
             <span>Source Atmosphérique :</span>
-            <span className="text-[10px] text-blue-400 font-mono">
+            <span className={`text-[10px] font-mono ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
               {weatherMode === 'scenario' ? 'Tempête Blizzard' : 'Open-Meteo Direct'}
             </span>
           </label>
@@ -268,27 +268,33 @@ export const RouteForm: React.FC<RouteFormProps> = ({
               onClick={() => setWeatherMode('live')}
               className={`py-1.5 px-2 text-xs rounded-lg border font-medium transition flex items-center justify-center gap-1.5 ${
                 weatherMode === 'live'
-                  ? 'bg-blue-600/20 border-blue-500 text-blue-400 font-bold'
+                  ? isDark
+                    ? 'bg-blue-600/15 border-blue-500/50 text-blue-400 font-semibold'
+                    : 'bg-blue-50 border-blue-400 text-blue-700 font-semibold'
                   : isDark
                   ? 'bg-[#070A12] border-slate-800 text-slate-400 hover:border-slate-700'
-                  : 'bg-slate-50 border-slate-200 text-slate-600'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'
               }`}
             >
-              🌐 Direct (Open-Meteo)
+              <Globe className={`w-3.5 h-3.5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
+              <span>Direct (Open-Meteo)</span>
             </button>
             <button
               type="button"
               onClick={() => setWeatherMode('scenario')}
               className={`py-1.5 px-2 text-xs rounded-lg border font-medium transition flex items-center justify-center gap-1.5 ${
                 weatherMode === 'scenario'
-                  ? 'bg-red-500/20 border-red-500 text-red-400 font-bold'
+                  ? isDark
+                    ? 'bg-red-500/15 border-red-500/50 text-red-400 font-semibold'
+                    : 'bg-red-50 border-red-400 text-red-700 font-semibold'
                   : isDark
                   ? 'bg-[#070A12] border-slate-800 text-slate-400 hover:border-slate-700'
-                  : 'bg-slate-50 border-slate-200 text-slate-600'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'
               }`}
               title="Démontre le basculement en Severe pour >40 000 lbs"
             >
-              ⚡ Scénario Tempête
+              <Zap className={`w-3.5 h-3.5 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
+              <span>Scénario Tempête</span>
             </button>
           </div>
         </div>
@@ -297,7 +303,7 @@ export const RouteForm: React.FC<RouteFormProps> = ({
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-500 active:scale-[0.99] disabled:bg-slate-700 text-white text-xs font-bold uppercase tracking-wider py-2.5 rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 transition-all cursor-pointer"
+          className="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 disabled:bg-slate-800 disabled:text-slate-500 text-white text-xs font-semibold uppercase tracking-wider py-2.5 rounded-lg flex items-center justify-center gap-2 transition cursor-pointer"
         >
           {loading ? (
             <>
@@ -313,3 +319,4 @@ export const RouteForm: React.FC<RouteFormProps> = ({
     </div>
   );
 };
+

@@ -25,7 +25,7 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
   return (
     <div className="space-y-4 flex flex-col h-full">
       {/* 1. Header of Right Column */}
-      <div className="flex items-center justify-between pb-2 border-b border-dashed border-blue-500/20">
+      <div className={`flex items-center justify-between pb-2 border-b border-dashed ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
         <div>
           <h3
             className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${
@@ -53,19 +53,19 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
             <div
               key={route.id}
               onClick={() => onSelectRoute(route.id)}
-              className={`relative rounded-xl p-3.5 border transition-all cursor-pointer ${
+              className={`relative rounded-xl p-3.5 border transition-colors cursor-pointer ${
                 isSelected
                   ? isDark
-                    ? 'bg-[#0E1526] border-blue-500 shadow-lg shadow-blue-950/60 ring-1 ring-blue-500/50'
-                    : 'bg-blue-50/60 border-blue-500 shadow-md ring-1 ring-blue-400'
+                    ? 'bg-[#0E1726] border-slate-700 border-l-2 border-l-blue-500'
+                    : 'bg-blue-50/50 border-blue-200 border-l-2 border-l-blue-600'
                   : isDark
-                  ? 'bg-[#0B0F19] border-slate-800 hover:border-slate-700 hover:bg-[#0F172A]'
-                  : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'bg-[#0B0F19] border-slate-800 hover:border-slate-700 hover:bg-[#0D1424]'
+                  : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/70'
               }`}
             >
               {/* Badge Recommended */}
               {route.is_recommended && (
-                <div className="absolute -top-2.5 right-3 bg-blue-600 text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-md uppercase tracking-wider border border-blue-400">
+                <div className="absolute -top-2.5 right-3 bg-blue-600 text-white text-[9px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 uppercase tracking-wider">
                   <Star className="w-2.5 h-2.5 fill-white" /> Recommandé
                 </div>
               )}
@@ -201,22 +201,22 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
 
       {/* 3. Live Checkpoint Telemetry / Route Diagnostics Panel */}
       <div
-        className={`rounded-xl p-4 border transition-all mt-auto ${
+        className={`rounded-xl p-4 border transition-colors mt-auto ${
           isDark
-            ? 'bg-[#0B0F19] border-blue-900/30 text-slate-100'
-            : 'bg-white border-slate-200 text-slate-900 shadow-slate-100'
+            ? 'bg-[#0B0F19] border-slate-800 text-slate-100'
+            : 'bg-white border-slate-200 text-slate-900'
         }`}
       >
         {selectedCheckpoint ? (
           <div>
-            <div className="flex items-center justify-between pb-2 mb-2 border-b border-dashed border-blue-500/20">
+            <div className={`flex items-center justify-between pb-2 mb-2 border-b border-dashed ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
               <span className="text-xs font-bold text-blue-500 flex items-center gap-1.5 uppercase font-mono">
                 <Info className="w-3.5 h-3.5" /> Checkpoint #{selectedCheckpoint.index}
               </span>
               <button
                 type="button"
                 onClick={onClearCheckpoint}
-                className="text-slate-400 hover:text-white p-1 rounded transition"
+                className={`p-1 rounded transition ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-400 hover:text-slate-900'}`}
                 title="Fermer la sélection"
               >
                 <X className="w-3.5 h-3.5" />
@@ -224,13 +224,13 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
             </div>
 
             <div className="flex items-center justify-between mb-3 text-xs">
-              <span className="font-mono text-slate-400">Mile {selectedCheckpoint.distance_from_origin_miles}</span>
+              <span className={`font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Mile {selectedCheckpoint.distance_from_origin_miles}</span>
               <span
                 className="font-mono font-bold px-2 py-0.5 rounded text-[10px] uppercase"
                 style={{
-                  backgroundColor: `${selectedCheckpoint.risk_evaluation.overall_color}20`,
+                  backgroundColor: `${selectedCheckpoint.risk_evaluation.overall_color}18`,
                   color: selectedCheckpoint.risk_evaluation.overall_color,
-                  border: `1px solid ${selectedCheckpoint.risk_evaluation.overall_color}50`,
+                  border: `1px solid ${selectedCheckpoint.risk_evaluation.overall_color}40`,
                 }}
               >
                 {selectedCheckpoint.risk_evaluation.overall_level}
@@ -244,17 +244,17 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                   isDark ? 'bg-[#070A12] border-slate-800' : 'bg-slate-50 border-slate-200'
                 }`}
               >
-                <span className="flex items-center gap-1.5 text-slate-400">
+                <span className={`flex items-center gap-1.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   <Wind className="w-3.5 h-3.5 text-blue-500" /> Vent
                 </span>
-                <span className="font-bold text-blue-400">{selectedCheckpoint.weather.wind_mph} mph</span>
+                <span className={`font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>{selectedCheckpoint.weather.wind_mph} mph</span>
               </div>
               <div
                 className={`p-2 rounded-lg border flex items-center justify-between ${
                   isDark ? 'bg-[#070A12] border-slate-800' : 'bg-slate-50 border-slate-200'
                 }`}
               >
-                <span className="flex items-center gap-1.5 text-slate-400">
+                <span className={`flex items-center gap-1.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   <CloudRain className="w-3.5 h-3.5 text-blue-400" /> Pluie
                 </span>
                 <span className="font-bold">{selectedCheckpoint.weather.rain_in_hr} in/h</span>
@@ -264,7 +264,7 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                   isDark ? 'bg-[#070A12] border-slate-800' : 'bg-slate-50 border-slate-200'
                 }`}
               >
-                <span className="flex items-center gap-1.5 text-slate-400">
+                <span className={`flex items-center gap-1.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   <Snowflake className="w-3.5 h-3.5 text-cyan-400" /> Neige
                 </span>
                 <span className="font-bold">{selectedCheckpoint.weather.snow_in_hr} in/h</span>
@@ -274,8 +274,8 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
             <p
               className={`text-[10px] mt-2.5 p-2 rounded-lg border leading-relaxed ${
                 isDark
-                  ? 'bg-blue-950/20 border-blue-900/30 text-slate-300'
-                  : 'bg-blue-50/50 border-blue-200 text-slate-700'
+                  ? 'bg-slate-900/40 border-slate-800 text-slate-300'
+                  : 'bg-slate-50 border-slate-200 text-slate-700'
               }`}
             >
               {selectedCheckpoint.risk_evaluation.primary_hazard}
@@ -283,11 +283,11 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
           </div>
         ) : (
           <div>
-            <div className="flex items-center justify-between pb-2 mb-2 border-b border-dashed border-blue-500/20">
+            <div className={`flex items-center justify-between pb-2 mb-2 border-b border-dashed ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
               <span className="text-xs font-bold text-blue-500 uppercase tracking-wider flex items-center gap-1.5">
                 <Info className="w-3.5 h-3.5" /> Télémétrie en Direct
               </span>
-              <span className="text-[9px] font-mono text-slate-400">Cliquez un point</span>
+              <span className={`text-[9px] font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Cliquez un point</span>
             </div>
             <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
               Cliquez sur n'importe quel point de contrôle sur la carte pour inspecter en temps réel ses
@@ -315,3 +315,4 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
     </div>
   );
 };
+
