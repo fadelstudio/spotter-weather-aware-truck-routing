@@ -4,11 +4,12 @@ import { RouteMap } from './components/RouteMap';
 import { RouteComparison } from './components/RouteComparison';
 import { HeatmapSlider } from './components/HeatmapSlider';
 import { CheckpointModal } from './components/CheckpointModal';
-import { RoutingAnalysisResponse, RouteOption, Checkpoint } from './types';
+import { RoutingAnalysisResponse, Checkpoint } from './types';
 import { analyzeRoutes } from './services/api';
-import { Truck, ShieldCheck, Github, ExternalLink, Info } from 'lucide-react';
+import { Truck, ShieldCheck, Github, Sun, Moon } from 'lucide-react';
 
 export const App: React.FC = () => {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [origin, setOrigin] = useState('Chicago, IL');
   const [destination, setDestination] = useState('Denver, CO');
   const [departureTime, setDepartureTime] = useState(() => {
@@ -29,6 +30,8 @@ export const App: React.FC = () => {
   const [showHeatmap, setShowHeatmap] = useState<boolean>(true);
   const [selectedCheckpoint, setSelectedCheckpoint] = useState<Checkpoint | null>(null);
 
+  const isDark = theme === 'dark';
+
   const handleAnalyze = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLoading(true);
@@ -46,19 +49,17 @@ export const App: React.FC = () => {
 
       setData(res);
       if (res.routes && res.routes.length > 0) {
-        // Find recommended route or default to first
         const rec = res.routes.find((r) => r.is_recommended) || res.routes[0];
         setSelectedRouteId(rec.id);
       }
     } catch (err: any) {
       console.error('Failed to analyze routes:', err);
-      setError(err.message || 'Error communicating with routing & weather engine.');
+      setError(err.message || 'Erreur lors de la communication avec le moteur météo & routage.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Run initial calculation on load
   useEffect(() => {
     handleAnalyze();
   }, []);
@@ -66,47 +67,90 @@ export const App: React.FC = () => {
   const activeRoute = data?.routes.find((r) => r.id === selectedRouteId);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
-      {/* Top Navigation Bar */}
-      <header className="bg-slate-900/90 border-b border-slate-800 backdrop-blur-md sticky top-0 z-50 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
+    <div
+      className={`min-h-screen flex flex-col transition-colors duration-200 font-sans ${
+        isDark ? 'bg-[#070A12] text-slate-100' : 'bg-[#F8FAFC] text-slate-900'
+      }`}
+    >
+      {/* Top Header */}
+      <header
+        className={`sticky top-0 z-50 px-6 py-3 border-b backdrop-blur-md flex flex-wrap items-center justify-between gap-4 transition-colors ${
+          isDark
+            ? 'bg-[#0B0F19]/90 border-blue-900/30'
+            : 'bg-white/90 border-slate-200'
+        }`}
+      >
         <div className="flex items-center gap-3">
-          <div className="bg-emerald-500/20 text-emerald-400 p-2 rounded-xl border border-emerald-500/30">
+          <div className="bg-blue-600/15 text-blue-500 p-2 rounded-xl border border-blue-500/30 shadow-sm shadow-blue-500/10">
             <Truck className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-bold text-base text-white tracking-tight flex items-center gap-2">
-              Weather-Aware Truck Routing
-              <span className="text-[10px] bg-slate-800 text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-slate-700">
-                Spotter AI Assessment
+            <h1 className="font-bold text-sm tracking-tight flex items-center gap-2">
+              <span>Weather-Aware Truck Routing</span>
+              <span className="text-[10px] bg-blue-500/10 text-blue-400 font-mono px-2 py-0.5 rounded-full border border-blue-500/20">
+                Spotter AI
               </span>
             </h1>
-            <p className="text-xs text-slate-400">
-              Commercial Fleet Safety & Dynamic Weather Risk Optimization
+            <p className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              Optimisation Sécurisée & Modélisation Atmosphérique des Poids Lourds
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 text-xs">
-          <div className="hidden sm:flex items-center gap-2 text-slate-400">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>Candidate: <strong>Cheikh M. Fadel Diop</strong></span>
+        <div className="flex items-center gap-3 text-xs">
+          {/* Light / Dark Mode Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setTheme(isDark ? 'light' : 'dark')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition cursor-pointer ${
+              isDark
+                ? 'bg-slate-900 hover:bg-slate-800 text-blue-400 border-slate-800'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+            }`}
+            title="Basculer Mode Clair / Sombre"
+          >
+            {isDark ? (
+              <>
+                <Sun className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-[11px]">Mode Clair</span>
+              </>
+            ) : (
+              <>
+                <Moon className="w-3.5 h-3.5 text-blue-600" />
+                <span className="text-[11px]">Mode Sombre</span>
+              </>
+            )}
+          </button>
+
+          <div
+            className={`hidden sm:flex items-center gap-2 font-mono text-[11px] px-2.5 py-1.5 rounded-lg border ${
+              isDark ? 'border-slate-800 text-slate-400' : 'border-slate-200 text-slate-600'
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-blue-500" />
+            <span>Cheikh M. Fadel Diop</span>
           </div>
+
           <a
             href="https://github.com/cheikhfadeldiop"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 transition"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition ${
+              isDark
+                ? 'bg-slate-900 hover:bg-slate-800 text-slate-200 border-slate-800'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200'
+            }`}
           >
             <Github className="w-3.5 h-3.5" />
-            <span>GitHub</span>
+            <span className="text-[11px] font-medium">GitHub</span>
           </a>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Form & Trip Info */}
-        <div className="lg:col-span-4 space-y-5">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Left Column: Form & Route Summary */}
+        <div className="lg:col-span-4 space-y-4">
           <RouteForm
             origin={origin}
             setOrigin={setOrigin}
@@ -122,37 +166,51 @@ export const App: React.FC = () => {
             setWeatherMode={setWeatherMode}
             onSubmit={handleAnalyze}
             loading={loading}
+            theme={theme}
           />
 
-          {/* Quick Active Route Metrics */}
+          {/* Active Route Telemetry Pill */}
           {activeRoute && (
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-slate-300">Active Route: {activeRoute.name}</span>
+            <div
+              className={`rounded-xl p-4 border transition-colors shadow-lg ${
+                isDark
+                  ? 'bg-[#0B0F19] border-blue-900/30 text-slate-300'
+                  : 'bg-white border-slate-200 text-slate-800 shadow-slate-100'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="font-bold text-xs uppercase tracking-wider text-blue-500">
+                  Itinéraire Actif : {activeRoute.name}
+                </span>
                 {activeRoute.is_recommended && (
-                  <span className="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                    ★ Safest Choice
+                  <span className="text-[10px] font-mono font-bold bg-blue-500/15 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">
+                    ★ Choix Recommandé
                   </span>
                 )}
               </div>
-              <p className="text-slate-400 text-[11px]">{activeRoute.recommendation_rationale}</p>
-              <div className="pt-2 border-t border-slate-800 text-[11px] text-slate-500 flex justify-between">
-                <span>Checkpoints sampled: {activeRoute.checkpoints.length}</span>
-                <span>Distance: {activeRoute.total_distance_miles} mi</span>
+              <p className={`text-[11px] leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                {activeRoute.recommendation_rationale}
+              </p>
+              <div
+                className={`pt-2 mt-2 border-t border-dashed flex justify-between text-[10px] font-mono ${
+                  isDark ? 'border-slate-800 text-slate-500' : 'border-slate-200 text-slate-500'
+                }`}
+              >
+                <span>Checkpoints : {activeRoute.checkpoints.length}</span>
+                <span>Distance Totale : {activeRoute.total_distance_miles} mi</span>
               </div>
             </div>
           )}
 
           {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl text-xs">
+            <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-500 rounded-xl text-xs font-mono">
               <strong>Notice:</strong> {error}
             </div>
           )}
         </div>
 
         {/* Right Column: Map, Heatmap Slider, and Route Comparison */}
-        <div className="lg:col-span-8 space-y-5">
-          {/* Map */}
+        <div className="lg:col-span-8 space-y-4">
           <RouteMap
             routes={data?.routes || []}
             selectedRouteId={selectedRouteId}
@@ -161,22 +219,23 @@ export const App: React.FC = () => {
             showHeatmap={showHeatmap}
             corridorHeatmap={data?.corridor_heatmap}
             onSelectCheckpoint={(cp) => setSelectedCheckpoint(cp)}
+            theme={theme}
           />
 
-          {/* Heatmap 0-48h Slider */}
           <HeatmapSlider
             hours={data?.corridor_heatmap?.hours || [0, 3, 6, 9, 12, 18, 24, 36, 48]}
             selectedHour={selectedHour}
             onHourChange={(h) => setSelectedHour(h)}
             showHeatmap={showHeatmap}
             onToggleHeatmap={() => setShowHeatmap(!showHeatmap)}
+            theme={theme}
           />
 
-          {/* Route Comparison Cards */}
           <RouteComparison
             routes={data?.routes || []}
             selectedRouteId={selectedRouteId}
             onSelectRoute={(id) => setSelectedRouteId(id)}
+            theme={theme}
           />
         </div>
       </main>
@@ -185,11 +244,18 @@ export const App: React.FC = () => {
       <CheckpointModal
         checkpoint={selectedCheckpoint}
         onClose={() => setSelectedCheckpoint(null)}
+        theme={theme}
       />
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-slate-900/50 py-4 px-6 text-center text-xs text-slate-500">
-        Weather-Aware Truck Routing Engine • Built for Spotter AI Technical Assessment • By Cheikh M. Fadel Diop
+      <footer
+        className={`border-t py-3.5 px-6 text-center text-[11px] font-mono transition-colors ${
+          isDark
+            ? 'border-blue-900/20 bg-[#070A12] text-slate-500'
+            : 'border-slate-200 bg-slate-50 text-slate-500'
+        }`}
+      >
+        Spotter AI Weather-Aware Truck Routing • Candidate: Cheikh M. Fadel Diop • Mission-Critical Fleet Decision Support
       </footer>
     </div>
   );

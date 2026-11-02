@@ -36,13 +36,13 @@ class RiskLevel(IntEnum):
 
     def to_color(self) -> str:
         colors = {
-            self.LOW: "#10B981",       # Emerald Green
-            self.MODERATE: "#F59E0B",  # Amber Yellow
-            self.HIGH: "#F97316",      # Orange
-            self.SEVERE: "#EF4444",    # Red
-            self.NO_TRAVEL: "#7F1D1D"  # Dark Red / Maroon
+            self.LOW: "#3B82F6",       # Electric Blue (Safe/Nominal)
+            self.MODERATE: "#F59E0B",  # Amber Alert
+            self.HIGH: "#F97316",      # Orange High Risk
+            self.SEVERE: "#EF4444",    # Neon Red Severe
+            self.NO_TRAVEL: "#991B1B"  # Deep Crimson / No Travel
         }
-        return colors.get(self, "#10B981")
+        return colors.get(self, "#3B82F6")
 
 
 def classify_wind(wind_mph: float, load_weight_lbs: float) -> Tuple[RiskLevel, str]:
