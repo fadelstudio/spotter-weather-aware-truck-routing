@@ -34,6 +34,8 @@ And outputs:
 - **Hierarchical Route Recommendation** identifying the optimal trade-off between safety hazards and delivery efficiency.
 - **Interactive Multi-View Cockpit** featuring an OSRM-style map with real-time dark/light inversion, a 0–48 hour corridor weather heatmap slider, and live checkpoint telemetry.
 
+> For a dedicated technical requirements summary and functional scope of work, refer to [SPECIFICATIONS.md](file:///c:/Users/joe_f/OneDrive/Documents/2eJob/projets/spotter_truck_routing/SPECIFICATIONS.md).
+
 ---
 
 ## 2. Weather Risk Model & Business Rules
@@ -124,6 +126,7 @@ spotter_truck_routing/
 │   │       ├── HeatmapSlider.tsx         # Center column: 0-48h weather slider
 │   │       ├── RouteSidebar.tsx          # Right column: route cards & live telemetry
 │   │       └── CheckpointModal.tsx       # Detailed checkpoint inspector modal
+├── SPECIFICATIONS.md                     # Technical & Functional Specifications (Scope of Work)
 ├── start.bat                             # One-click Windows launch script
 └── start.sh                              # One-click Unix/macOS launch script
 ```
