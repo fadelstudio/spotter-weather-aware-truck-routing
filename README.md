@@ -2,13 +2,18 @@
 
 > A mission-critical fleet decision support system engineered to evaluate atmospheric hazards, dynamic cargo rollover physics, and highway travel times to recommend the safest routes for commercial heavy-duty trucks.
 
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/fadelstudio/spotter-weather-aware-truck-routing)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/fadelstudio/spotter-weather-aware-truck-routing)
+[![CI/CD](https://github.com/fadelstudio/spotter-weather-aware-truck-routing/actions/workflows/deploy.yml/badge.svg)](https://github.com/fadelstudio/spotter-weather-aware-truck-routing/actions)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-5.0-092E20.svg?style=flat-square&logo=django&logoColor=white)](https://www.djangoproject.com/)
-[![Django REST Framework](https://img.shields.io/badge/DRF-3.15-red.svg?style=flat-square)](https://www.django-rest-framework.org/)
 [![React](https://img.shields.io/badge/React-18.2-20232A.svg?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2-3178C6.svg?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC.svg?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Leaflet](https://img.shields.io/badge/Leaflet-1.9-199900.svg?style=flat-square&logo=leaflet&logoColor=white)](https://leafletjs.com/)
+
+### 🌐 Live Deployment & Source Code
+- **Public GitHub Repository**: [github.com/fadelstudio/spotter-weather-aware-truck-routing](https://github.com/fadelstudio/spotter-weather-aware-truck-routing)
+- **Live Frontend (Vercel Preview)**: [swift-silicon-k1elsfm.tmp.now](https://swift-silicon-k1elsfm.tmp.now)
+- **1-Click Render Deploy**: Click the **Deploy to Render** badge above or import repository on [dashboard.render.com](https://dashboard.render.com) using the included `render.yaml`.
 
 ---
 
