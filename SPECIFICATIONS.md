@@ -1,5 +1,8 @@
-# CAHIER DES CHARGES TECHNIQUE & FONCTIONNEL
-## Projet : Weather-Aware Truck Routing (Spotter AI Take-Home Assessment)
+# CAHIER DES CHARGES TECHNIQUE & FONCTIONNEL (FR)
+## Projet : Weather-Aware Truck Routing (Spotter AI Assessment)
+
+> **Document de référence en français décrivant le contexte métier, les règles de calcul et les spécifications techniques.**  
+> Pour la documentation principale en anglais, consulter le [README.md](file:///c:/Users/joe_f/OneDrive/Documents/2eJob/projets/spotter_truck_routing/README.md).
 
 ---
 
