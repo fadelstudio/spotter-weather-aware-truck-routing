@@ -53,6 +53,11 @@ export const RouteMap: React.FC<RouteMapProps> = ({
 
     mapInstanceRef.current = map;
 
+    // Ensure map tiles render properly after DOM mount
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 200);
+
     return () => {
       map.remove();
       mapInstanceRef.current = null;
