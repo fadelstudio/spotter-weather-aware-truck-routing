@@ -64,11 +64,11 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
             }`}
           >
             <Layers className="w-3.5 h-3.5 text-blue-500" />
-            {showHeatmap ? 'Calque Météo Actif' : 'Calque Météo Masqué'}
+            {showHeatmap ? 'Weather Layer Active' : 'Weather Layer Hidden'}
           </button>
 
           <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            Horizon :{' '}
+            Forecast Horizon:{' '}
             <strong className="text-blue-500 font-mono">T+{selectedHour}h</strong>
           </span>
         </div>
@@ -90,7 +90,7 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
               </>
             ) : (
               <>
-                <Play className="w-3.5 h-3.5 fill-current" /> Animation Tempête
+                <Play className="w-3.5 h-3.5 fill-current" /> Storm Animation
               </>
             )}
           </button>
@@ -106,7 +106,7 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
                 ? 'bg-[#070A12] hover:bg-slate-900 text-slate-400 hover:text-white'
                 : 'bg-slate-50 hover:bg-slate-100 text-slate-600'
             }`}
-            title="Réinitialiser à T+0"
+            title="Reset to T+0"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
@@ -163,19 +163,19 @@ export const HeatmapSlider: React.FC<HeatmapSliderProps> = ({
           isDark ? 'border-white/[0.04] text-slate-400' : 'border-black/[0.04] text-slate-500'
         }`}
       >
-        <span className="font-semibold uppercase tracking-wider">Légende Risque :</span>
+        <span className="font-semibold uppercase tracking-wider">Risk Legend:</span>
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Faible
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Low
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block" /> Modéré
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block" /> Moderate
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" /> Élevé
+            <span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" /> High
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" /> Sévère
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" /> Severe
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-red-950 border border-red-500 inline-block" /> No Travel

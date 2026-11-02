@@ -47,10 +47,10 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
           </div>
           <div>
             <h3 className="font-semibold text-sm tracking-wide">
-              Point de Contrôle #{checkpoint.index} — Mile {checkpoint.distance_from_origin_miles}
+              Checkpoint #{checkpoint.index} — Mile {checkpoint.distance_from_origin_miles}
             </h3>
             <p className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              ETA : {new Date(checkpoint.eta).toLocaleString()}
+              ETA: {new Date(checkpoint.eta).toLocaleString()}
             </p>
           </div>
         </div>
@@ -69,7 +69,7 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
             ) : (
               <CheckCircle2 className="w-4 h-4" />
             )}
-            Statut : {evalRes.overall_level}
+            Status: {evalRes.overall_level}
           </span>
           <span className="text-[10px] font-mono opacity-80">
             GPS: {checkpoint.lat.toFixed(3)}, {checkpoint.lng.toFixed(3)}
@@ -87,7 +87,7 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
             <div className="flex items-start gap-2.5">
               <Wind className="w-4 h-4 text-blue-500 mt-0.5" />
               <div>
-                <span className="font-semibold text-xs">Vitesse du Vent :</span>
+                <span className="font-semibold text-xs">Wind Speed:</span>
                 <p className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   {evalRes.wind.reason}
                 </p>
@@ -105,7 +105,7 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
             <div className="flex items-start gap-2.5">
               <CloudRain className="w-4 h-4 text-blue-400 mt-0.5" />
               <div>
-                <span className="font-semibold text-xs">Intensité Pluie :</span>
+                <span className="font-semibold text-xs">Rainfall Rate:</span>
                 <p className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   {evalRes.rain.reason}
                 </p>
@@ -123,7 +123,7 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
             <div className="flex items-start gap-2.5">
               <Snowflake className="w-4 h-4 text-cyan-400 mt-0.5" />
               <div>
-                <span className="font-semibold text-xs">Chute de Neige :</span>
+                <span className="font-semibold text-xs">Snowfall Rate:</span>
                 <p className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   {evalRes.snow.reason}
                 </p>
@@ -146,7 +146,7 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
               isDark ? 'text-blue-400' : 'text-blue-600'
             }`}
           >
-            Synthèse d'Avertissement :
+            Warning Summary:
           </strong>
           {evalRes.primary_hazard}
         </div>
@@ -155,7 +155,7 @@ export const CheckpointModal: React.FC<CheckpointModalProps> = ({
           onClick={onClose}
           className="mt-4 w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold uppercase tracking-wider py-2.5 rounded-lg transition cursor-pointer shadow-sm"
         >
-          Fermer l'Inspection
+          Close Inspection
         </button>
       </div>
     </div>

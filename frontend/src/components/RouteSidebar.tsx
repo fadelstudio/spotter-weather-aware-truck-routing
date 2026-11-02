@@ -36,18 +36,18 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
               isDark ? 'text-slate-200' : 'text-slate-800'
             }`}
           >
-            <span>Options d'Itinéraires</span>
+            <span>Route Options</span>
             <span className="text-[10px] bg-blue-600/15 text-blue-500 font-mono px-2 py-0.5 rounded-full">
               {routes.length} Alternatives
             </span>
           </h3>
           <p className={`text-[10px] mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            Classées par l'algorithme de sécurité Spotter
+            Ranked by Spotter Safety Hierarchy
           </p>
         </div>
       </div>
 
-      {/* 2. Vertical Stack of Route Cards */}
+      {/* 2. Vertical Stack of Route Cards (No border-left, elevated shadow on active) */}
       <div className="space-y-2.5">
         {routes.map((route) => {
           const isSelected = route.id === selectedRouteId;
@@ -57,20 +57,20 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
             <div
               key={route.id}
               onClick={() => onSelectRoute(route.id)}
-              className={`relative rounded-xl p-3.5 shadow-sm transition-all cursor-pointer ${
+              className={`relative rounded-xl p-3.5 transition-all cursor-pointer ${
                 isSelected
                   ? isDark
-                    ? 'bg-[#0E1726] border-l-[3.5px] border-l-blue-500'
-                    : 'bg-blue-50/45 border-l-[3.5px] border-l-blue-600'
+                    ? 'bg-[#0E1726] shadow-md shadow-blue-500/15 ring-1 ring-blue-500/30'
+                    : 'bg-blue-50/50 shadow-md shadow-blue-600/10 ring-1 ring-blue-500/30'
                   : isDark
-                  ? 'bg-[#0B0F19] hover:bg-[#0D1424]'
-                  : 'bg-white hover:bg-slate-50/80'
+                  ? 'bg-[#0B0F19] shadow-sm hover:bg-[#0D1424]'
+                  : 'bg-white shadow-sm hover:bg-slate-50/80'
               }`}
             >
               {/* Badge Recommended */}
               {route.is_recommended && (
                 <div className="absolute -top-2.5 right-3 bg-blue-600 text-white text-[9px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 uppercase tracking-wider shadow-xs">
-                  <Star className="w-2.5 h-2.5 fill-white" /> Recommandé
+                  <Star className="w-2.5 h-2.5 fill-white" /> Recommended
                 </div>
               )}
 
@@ -126,7 +126,7 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
               {/* Risk Distribution Bar */}
               <div className="mt-2">
                 <div className="flex justify-between text-[10px] mb-1 font-mono">
-                  <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>Score Composite :</span>
+                  <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>Composite Score:</span>
                   <span className="font-bold text-blue-500">
                     {risk_summary.average_risk_score} / 5.0
                   </span>
@@ -143,7 +143,7 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                         width: `${(risk_summary.low_miles / route.total_distance_miles) * 100}%`,
                       }}
                       className="bg-blue-500"
-                      title={`Faible: ${risk_summary.low_miles} mi`}
+                      title={`Low: ${risk_summary.low_miles} mi`}
                     />
                   )}
                   {risk_summary.moderate_miles > 0 && (
@@ -152,7 +152,7 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                         width: `${(risk_summary.moderate_miles / route.total_distance_miles) * 100}%`,
                       }}
                       className="bg-amber-400"
-                      title={`Modéré: ${risk_summary.moderate_miles} mi`}
+                      title={`Moderate: ${risk_summary.moderate_miles} mi`}
                     />
                   )}
                   {risk_summary.high_miles > 0 && (
@@ -161,7 +161,7 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                         width: `${(risk_summary.high_miles / route.total_distance_miles) * 100}%`,
                       }}
                       className="bg-orange-500"
-                      title={`Élevé: ${risk_summary.high_miles} mi`}
+                      title={`High: ${risk_summary.high_miles} mi`}
                     />
                   )}
                   {risk_summary.severe_miles > 0 && (
@@ -170,7 +170,7 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                         width: `${(risk_summary.severe_miles / route.total_distance_miles) * 100}%`,
                       }}
                       className="bg-red-500"
-                      title={`Sévère: ${risk_summary.severe_miles} mi`}
+                      title={`Severe: ${risk_summary.severe_miles} mi`}
                     />
                   )}
                   {risk_summary.no_travel_miles > 0 && (
@@ -188,11 +188,11 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                 <div className="flex items-center justify-between mt-2 text-[10px]">
                   {risk_summary.danger_miles > 0 ? (
                     <span className="bg-red-500/15 text-red-500 px-2 py-0.5 rounded flex items-center gap-1 font-mono font-bold">
-                      <AlertOctagon className="w-3 h-3" /> {risk_summary.danger_miles} mi Danger Sévère
+                      <AlertOctagon className="w-3 h-3" /> {risk_summary.danger_miles} mi Severe Danger
                     </span>
                   ) : (
                     <span className="bg-blue-500/15 text-blue-500 px-2 py-0.5 rounded flex items-center gap-1 font-mono font-bold">
-                      <CheckCircle2 className="w-3 h-3" /> 0 mi Danger Sévère
+                      <CheckCircle2 className="w-3 h-3" /> 0 mi Severe Danger
                     </span>
                   )}
                   <span className={`text-[9px] font-mono ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
@@ -229,7 +229,7 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                 className={`p-1 rounded transition cursor-pointer ${
                   isDark ? 'text-slate-400 hover:text-white' : 'text-slate-400 hover:text-slate-900'
                 }`}
-                title="Fermer la sélection"
+                title="Clear selection"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -258,7 +258,7 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                 }`}
               >
                 <span className={`flex items-center gap-1.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  <Wind className="w-3.5 h-3.5 text-blue-500" /> Vent
+                  <Wind className="w-3.5 h-3.5 text-blue-500" /> Wind
                 </span>
                 <span className={`font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
                   {selectedCheckpoint.weather.wind_mph} mph
@@ -270,7 +270,7 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                 }`}
               >
                 <span className={`flex items-center gap-1.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  <CloudRain className="w-3.5 h-3.5 text-blue-400" /> Pluie
+                  <CloudRain className="w-3.5 h-3.5 text-blue-400" /> Rain
                 </span>
                 <span className="font-bold">{selectedCheckpoint.weather.rain_in_hr} in/h</span>
               </div>
@@ -280,7 +280,7 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                 }`}
               >
                 <span className={`flex items-center gap-1.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  <Snowflake className="w-3.5 h-3.5 text-cyan-400" /> Neige
+                  <Snowflake className="w-3.5 h-3.5 text-cyan-400" /> Snow
                 </span>
                 <span className="font-bold">{selectedCheckpoint.weather.snow_in_hr} in/h</span>
               </div>
@@ -304,15 +304,15 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
               }`}
             >
               <span className="text-xs font-bold text-blue-500 uppercase tracking-wider flex items-center gap-1.5">
-                <Info className="w-3.5 h-3.5" /> Télémétrie en Direct
+                <Info className="w-3.5 h-3.5" /> Live Telemetry
               </span>
               <span className={`text-[9px] font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                Cliquez un point
+                Click any point
               </span>
             </div>
             <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Cliquez sur n'importe quel point de contrôle sur la carte pour inspecter en temps réel ses
-              paramètres de vent, pluie, neige et les règles de charge appliquées.
+              Click any checkpoint node along the route to inspect real-time wind, rain, snow conditions, and
+              cargo rollover rules applied.
             </p>
             {activeRoute && (
               <div
@@ -321,11 +321,11 @@ export const RouteSidebar: React.FC<RouteSidebarProps> = ({
                 }`}
               >
                 <div className="flex justify-between">
-                  <span>Itinéraire Actif :</span>
+                  <span>Active Route:</span>
                   <span className="text-blue-500 font-bold">{activeRoute.name}</span>
                 </div>
                 <div className="flex justify-between mt-1">
-                  <span>Checkpoints surveillés :</span>
+                  <span>Monitored Checkpoints:</span>
                   <span>{activeRoute.checkpoints.length} points</span>
                 </div>
               </div>

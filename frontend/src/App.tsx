@@ -57,8 +57,8 @@ export const App: React.FC = () => {
       }
       setMobileTab('map');
     } catch (err: any) {
-      console.error('Erreur analyse de route:', err);
-      setError(err.message || 'Erreur lors de la communication avec le moteur météo & routage.');
+      console.error('Route analysis error:', err);
+      setError(err.message || 'Error communicating with routing & weather engine.');
     } finally {
       setLoading(false);
     }
@@ -116,7 +116,7 @@ export const App: React.FC = () => {
               </span>
             </div>
             <p className={`text-[10px] hidden sm:block ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              Système Décisionnel Haute Sécurité • Vitesse du Vent & Surcharge
+              High-Security Fleet Decision Support • Wind Speed & Dynamic Cargo Physics
             </p>
           </div>
         </div>
@@ -132,17 +132,17 @@ export const App: React.FC = () => {
                 ? 'bg-white/5 hover:bg-white/10 text-blue-400'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
             }`}
-            title="Basculer Mode Clair / Sombre"
+            title="Toggle Light / Dark Mode"
           >
             {isDark ? (
               <>
                 <Sun className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-[11px] hidden sm:inline">Mode Clair</span>
+                <span className="text-[11px] hidden sm:inline">Light Mode</span>
               </>
             ) : (
               <>
                 <Moon className="w-3.5 h-3.5 text-blue-600" />
-                <span className="text-[11px] hidden sm:inline">Mode Sombre</span>
+                <span className="text-[11px] hidden sm:inline">Dark Mode</span>
               </>
             )}
           </button>
@@ -174,7 +174,7 @@ export const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Mobile Navigation Tabs (visible only on small screens) */}
+      {/* Mobile Navigation Tabs */}
       <div
         className={`lg:hidden flex px-2 py-1.5 gap-1 text-xs font-semibold shadow-xs ${
           isDark ? 'bg-[#0B0F19] border-b border-white/[0.04]' : 'bg-white'
@@ -191,7 +191,7 @@ export const App: React.FC = () => {
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <Sliders className="w-3.5 h-3.5" /> Trajet
+          <Sliders className="w-3.5 h-3.5" /> Parameters
         </button>
         <button
           type="button"
@@ -204,7 +204,7 @@ export const App: React.FC = () => {
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <Map className="w-3.5 h-3.5" /> Carte & Météo
+          <Map className="w-3.5 h-3.5" /> Map & Radar
         </button>
         <button
           type="button"
@@ -217,14 +217,14 @@ export const App: React.FC = () => {
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <Layers className="w-3.5 h-3.5" /> Itinéraires ({data?.routes?.length || 0})
+          <Layers className="w-3.5 h-3.5" /> Routes ({data?.routes?.length || 0})
         </button>
       </div>
 
       {/* 2. Main 3-Section Cockpit Grid */}
       <main className="flex-1 w-full max-w-[1720px] mx-auto p-3 sm:p-4 lg:p-5">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 xl:gap-5 items-start">
-          {/* SECTION 1 : GAUCHE (Formulaire de Trajet & Spécifications Camion) */}
+          {/* SECTION 1: LEFT (Trip Parameters & Cargo Rules) */}
           <div
             className={`lg:col-span-3 space-y-4 ${
               mobileTab === 'config' ? 'block' : 'hidden lg:block'
@@ -261,7 +261,7 @@ export const App: React.FC = () => {
                   isDark ? 'border-white/[0.04]' : 'border-black/[0.04]'
                 }`}
               >
-                <span>Règles de Basculement au Vent</span>
+                <span>Cargo Rollover Wind Physics</span>
                 <span className={`text-[10px] font-mono ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
                   Spotter AI
                 </span>
@@ -273,7 +273,7 @@ export const App: React.FC = () => {
                   }`}
                 >
                   <div className="flex items-center gap-1.5 font-medium">
-                    <span>Vent ≥ 55 mph <span className="text-slate-500 text-[10px]">(Tout poids)</span></span>
+                    <span>Wind ≥ 55 mph <span className="text-slate-500 text-[10px]">(All weights)</span></span>
                     <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>→</span>
                   </div>
                   <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold font-mono bg-red-500/15 text-red-400">
@@ -286,7 +286,7 @@ export const App: React.FC = () => {
                   }`}
                 >
                   <div className="flex items-center gap-1.5 font-medium">
-                    <span>Vent 45–54 mph + &gt;30 000 lbs</span>
+                    <span>Wind 45–54 mph + &gt;30,000 lbs</span>
                     <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>→</span>
                   </div>
                   <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold font-mono bg-red-500/15 text-red-400">
@@ -299,11 +299,11 @@ export const App: React.FC = () => {
                   }`}
                 >
                   <div className="flex items-center gap-1.5 font-medium">
-                    <span>Vent 35–44 mph + &gt;40 000 lbs</span>
+                    <span>Wind 35–44 mph + &gt;40,000 lbs</span>
                     <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>→</span>
                   </div>
                   <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold font-mono bg-amber-500/15 text-amber-400">
-                    Sévère
+                    Severe
                   </span>
                 </div>
               </div>
@@ -316,7 +316,7 @@ export const App: React.FC = () => {
             )}
           </div>
 
-          {/* SECTION 2 : CENTRE PLUS LARGE (Carte Leaflet OSRM & Timeline 0-48h) */}
+          {/* SECTION 2: CENTER (Leaflet OSRM Map & 0-48h Timeline) */}
           <div
             className={`lg:col-span-6 space-y-3.5 ${
               mobileTab === 'map' ? 'block' : 'hidden lg:block'
@@ -344,7 +344,7 @@ export const App: React.FC = () => {
             />
           </div>
 
-          {/* SECTION 3 : DROITE EN PILE (3 Options de Routes & Télémétrie en Direct) */}
+          {/* SECTION 3: RIGHT (3 Stacked Route Cards & Live Telemetry) */}
           <div
             className={`lg:col-span-3 space-y-4 ${
               mobileTab === 'routes' ? 'block' : 'hidden lg:block'
@@ -362,14 +362,14 @@ export const App: React.FC = () => {
         </div>
       </main>
 
-      {/* Modal d'inspection détaillée si l'utilisateur clique */}
+      {/* Detailed Checkpoint Inspector Modal */}
       <CheckpointModal
         checkpoint={selectedCheckpoint}
         onClose={handleClearCheckpoint}
         theme={theme}
       />
 
-      {/* Footer minimaliste sans border grise */}
+      {/* Minimalist Cockpit Footer */}
       <footer
         className={`py-3 px-6 text-center text-[10px] font-mono transition-colors shadow-xs ${
           isDark
@@ -377,7 +377,7 @@ export const App: React.FC = () => {
             : 'bg-white text-slate-500'
         }`}
       >
-        Spotter AI Truck Routing Platform • React 18, TypeScript, Tailwind, Leaflet & Django REST Framework
+        Spotter AI Commercial Truck Routing Platform • React 18, TypeScript, Tailwind, Leaflet & Django REST Framework
       </footer>
     </div>
   );

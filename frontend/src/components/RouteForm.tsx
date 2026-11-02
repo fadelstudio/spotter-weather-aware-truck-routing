@@ -80,7 +80,7 @@ export const RouteForm: React.FC<RouteFormProps> = ({
         }`}
       >
         <h2 className="text-sm font-semibold flex items-center gap-2 text-blue-500 tracking-wide uppercase">
-          <Navigation className="w-4 h-4" /> Paramètres d'Itinéraire
+          <Navigation className="w-4 h-4" /> Trip Parameters
         </h2>
         <span className="text-[10px] font-mono px-2 py-0.5 rounded text-blue-400 bg-blue-500/10">
           Spotter AI v2.0
@@ -94,7 +94,7 @@ export const RouteForm: React.FC<RouteFormProps> = ({
             isDark ? 'text-slate-400' : 'text-slate-500'
           }`}
         >
-          Préréglages d'essai :
+          Quick Route Presets:
         </label>
         <div className="grid grid-cols-3 gap-1.5">
           {presets.map((p, idx) => (
@@ -135,13 +135,13 @@ export const RouteForm: React.FC<RouteFormProps> = ({
                 isDark ? 'text-slate-400' : 'text-slate-500'
               }`}
             >
-              Origine
+              Origin
             </label>
             <input
               type="text"
               value={origin}
               onChange={(e) => setOrigin(e.target.value)}
-              placeholder="ex: Chicago, IL"
+              placeholder="e.g. Chicago, IL"
               required
               className={`w-full rounded-lg px-3 py-2 text-xs font-medium transition focus:outline-none focus:ring-1 focus:ring-blue-500 ${
                 isDark
@@ -162,7 +162,7 @@ export const RouteForm: React.FC<RouteFormProps> = ({
               type="text"
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
-              placeholder="ex: Denver, CO"
+              placeholder="e.g. Denver, CO"
               required
               className={`w-full rounded-lg px-3 py-2 text-xs font-medium transition focus:outline-none focus:ring-1 focus:ring-blue-500 ${
                 isDark
@@ -180,7 +180,7 @@ export const RouteForm: React.FC<RouteFormProps> = ({
               isDark ? 'text-slate-400' : 'text-slate-500'
             }`}
           >
-            <Calendar className="w-3.5 h-3.5 text-blue-500" /> Date & Heure de départ
+            <Calendar className="w-3.5 h-3.5 text-blue-500" /> Departure Date & Time
           </label>
           <input
             type="datetime-local"
@@ -203,7 +203,7 @@ export const RouteForm: React.FC<RouteFormProps> = ({
                 isDark ? 'text-slate-400' : 'text-slate-500'
               }`}
             >
-              <Weight className="w-3.5 h-3.5 text-blue-500" /> Charge transportée
+              <Weight className="w-3.5 h-3.5 text-blue-500" /> Cargo Load Weight
             </label>
             <span
               className={`text-xs font-mono font-bold ${
@@ -217,7 +217,7 @@ export const RouteForm: React.FC<RouteFormProps> = ({
                     isDark ? 'text-red-400' : 'text-red-600'
                   }`}
                 >
-                  (Sensibilité Vent : Sévère)
+                  (Wind Sensitivity: Severe)
                 </span>
               )}
             </span>
@@ -239,8 +239,8 @@ export const RouteForm: React.FC<RouteFormProps> = ({
             }`}
           >
             <span>5k lb</span>
-            <span className={isDark ? 'text-amber-400' : 'text-amber-600'}>30k seuil</span>
-            <span className={isDark ? 'text-red-400' : 'text-red-600'}>40k seuil</span>
+            <span className={isDark ? 'text-amber-400' : 'text-amber-600'}>30k threshold</span>
+            <span className={isDark ? 'text-red-400' : 'text-red-600'}>40k threshold</span>
             <span>60k lb</span>
           </div>
         </div>
@@ -252,7 +252,7 @@ export const RouteForm: React.FC<RouteFormProps> = ({
               isDark ? 'text-slate-400' : 'text-slate-500'
             }`}
           >
-            <Sliders className="w-3.5 h-3.5 text-blue-500" /> Pas d'échantillonnage météo
+            <Sliders className="w-3.5 h-3.5 text-blue-500" /> Weather Sampling Interval
           </label>
           <div className="grid grid-cols-3 gap-1.5">
             {[10, 25, 50].map((step) => (
@@ -268,7 +268,7 @@ export const RouteForm: React.FC<RouteFormProps> = ({
                     : 'bg-slate-50 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                {step} miles
+                Every {step} miles
               </button>
             ))}
           </div>
@@ -281,13 +281,13 @@ export const RouteForm: React.FC<RouteFormProps> = ({
               isDark ? 'text-slate-400' : 'text-slate-500'
             }`}
           >
-            <span>Source Atmosphérique :</span>
+            <span>Atmospheric Engine Mode:</span>
             <span
               className={`text-[10px] font-mono ${
                 isDark ? 'text-blue-400' : 'text-blue-600'
               }`}
             >
-              {weatherMode === 'scenario' ? 'Tempête Blizzard' : 'Open-Meteo Direct'}
+              {weatherMode === 'scenario' ? 'Blizzard Storm Scenario' : 'Direct (Open-Meteo)'}
             </span>
           </label>
           <div className="grid grid-cols-2 gap-1.5">
@@ -319,10 +319,10 @@ export const RouteForm: React.FC<RouteFormProps> = ({
                   ? 'bg-[#070A12] text-slate-400 hover:text-white hover:bg-slate-900'
                   : 'bg-slate-50 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
-              title="Démontre le basculement en Severe pour >40 000 lbs"
+              title="Demonstrates severe escalation for loads >40,000 lbs"
             >
               <Zap className={`w-3.5 h-3.5 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
-              <span>Scénario Tempête</span>
+              <span>Storm Scenario</span>
             </button>
           </div>
         </div>
@@ -335,11 +335,11 @@ export const RouteForm: React.FC<RouteFormProps> = ({
         >
           {loading ? (
             <>
-              <RotateCcw className="w-4 h-4 animate-spin" /> Calcul Météo & Risques...
+              <RotateCcw className="w-4 h-4 animate-spin" /> Computing Weather & Risk...
             </>
           ) : (
             <>
-              <Play className="w-3.5 h-3.5 fill-white" /> Optimiser & Recommander
+              <Play className="w-3.5 h-3.5 fill-white" /> Optimize & Recommend Route
             </>
           )}
         </button>

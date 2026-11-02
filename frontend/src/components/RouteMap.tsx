@@ -53,8 +53,8 @@ const TILE_PROVIDERS: Record<MapViewStyle, TileProviderConfig> = {
 };
 
 const STYLE_BUTTONS = [
-  { key: 'dark', label: 'Sombre', icon: Moon },
-  { key: 'light', label: 'Clair', icon: Sun },
+  { key: 'dark', label: 'Dark', icon: Moon },
+  { key: 'light', label: 'Light', icon: Sun },
   { key: 'satellite', label: 'Satellite', icon: Globe },
   { key: 'navigation', label: 'Routes', icon: Map },
 ] as const;
@@ -92,7 +92,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
     if (typeof L === 'undefined') {
-      console.warn('Leaflet non charge');
+      console.warn('Leaflet not loaded');
       return;
     }
 
@@ -146,7 +146,6 @@ export const RouteMap: React.FC<RouteMapProps> = ({
       subdomains: provider.subdomains || ['a', 'b', 'c'],
     }).addTo(map);
 
-    // Ensure tile layer stays beneath geojson and heatmap layers
     newLayer.bringToBack();
     tileLayerRef.current = newLayer;
 
@@ -155,7 +154,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
     }
   }, [mapStyle]);
 
-  // Recenter / Fit bounds helper (explicitly triggered by user)
+  // Recenter helper explicitly triggered by user
   const handleRecenter = () => {
     const map = mapInstanceRef.current;
     if (!map || !routes || routes.length === 0) return;
@@ -246,7 +245,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
               fillOpacity: 1,
             });
 
-            // Modern Precision Tooltip without emojis
+            // Modern Precision Tooltip
             const isDarkMap = mapStyle === 'dark' || mapStyle === 'satellite';
             const popupHtml = `
               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: ${isDarkMap ? '#090D16' : '#FFFFFF'}; color: ${isDarkMap ? '#F8FAFC' : '#0F172A'}; padding: 10px 12px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); min-width: 210px;">
@@ -257,19 +256,19 @@ export const RouteMap: React.FC<RouteMapProps> = ({
                   </span>
                 </div>
                 <div style="font-size: 11px; color: ${isDarkMap ? '#94A3B8' : '#64748B'}; margin-bottom: 8px; font-family: monospace;">
-                  ETA : <b style="color: ${isDarkMap ? '#FFFFFF' : '#0F172A'};">${new Date(cp.eta).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</b>
+                  ETA: <b style="color: ${isDarkMap ? '#FFFFFF' : '#0F172A'};">${new Date(cp.eta).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</b>
                 </div>
                 <div style="font-size: 11px; border-top: 1px solid ${isDarkMap ? '#1E293B' : '#F1F5F9'}; padding-top: 6px; line-height: 1.6;">
                   <div style="display: flex; justify-content: space-between;">
-                    <span style="color: ${isDarkMap ? '#94A3B8' : '#64748B'};">Vent :</span>
+                    <span style="color: ${isDarkMap ? '#94A3B8' : '#64748B'};">Wind:</span>
                     <b style="color: ${isDarkMap ? '#60A5FA' : '#2563EB'}; font-family: monospace;">${cp.weather.wind_mph} mph</b>
                   </div>
                   <div style="display: flex; justify-content: space-between;">
-                    <span style="color: ${isDarkMap ? '#94A3B8' : '#64748B'};">Pluie :</span>
+                    <span style="color: ${isDarkMap ? '#94A3B8' : '#64748B'};">Rain:</span>
                     <b style="color: ${isDarkMap ? '#93C5FD' : '#0284C7'}; font-family: monospace;">${cp.weather.rain_in_hr} in/h</b>
                   </div>
                   <div style="display: flex; justify-content: space-between;">
-                    <span style="color: ${isDarkMap ? '#94A3B8' : '#64748B'};">Neige :</span>
+                    <span style="color: ${isDarkMap ? '#94A3B8' : '#64748B'};">Snow:</span>
                     <b style="color: ${isDarkMap ? '#E2E8F0' : '#475569'}; font-family: monospace;">${cp.weather.snow_in_hr} in/h</b>
                   </div>
                 </div>
@@ -308,7 +307,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
       }
     });
 
-    // Auto-fit bounds ONLY when new routes are loaded, NOT on route selection or animation tick
+    // Auto-fit bounds ONLY when new routes are loaded
     const currentRouteKey = routes.map((r) => r.id).join(';') + `_${routes.length}`;
     if (allLatLngs.length > 0 && currentRouteKey !== lastFittedRouteKeyRef.current) {
       lastFittedRouteKeyRef.current = currentRouteKey;
@@ -405,10 +404,10 @@ export const RouteMap: React.FC<RouteMapProps> = ({
               ? 'bg-[#090D16]/90 text-slate-300 hover:text-white hover:bg-white/5'
               : 'bg-white/95 text-slate-700 hover:text-blue-600 hover:bg-slate-50'
           }`}
-          title="Recadrer sur l'ensemble de l'itineraire"
+          title="Recenter view on full corridor"
         >
           <Compass className="w-3.5 h-3.5 text-blue-500" />
-          <span className="hidden md:inline">Recadrer</span>
+          <span className="hidden md:inline">Recenter</span>
         </button>
 
         {/* Toggle Heatmap pill */}
@@ -424,10 +423,10 @@ export const RouteMap: React.FC<RouteMapProps> = ({
               ? 'bg-[#090D16]/90 text-slate-400 hover:text-white hover:bg-white/5'
               : 'bg-white/95 text-slate-600 hover:bg-slate-50'
           }`}
-          title="Afficher/Masquer le radar météo dynamique"
+          title="Toggle dynamic weather radar overlay"
         >
           <Layers className="w-3.5 h-3.5 text-blue-500" />
-          <span className="hidden md:inline">{showHeatmap ? 'Radar Météo' : 'Radar Masqué'}</span>
+          <span className="hidden md:inline">{showHeatmap ? 'Radar Active' : 'Radar Hidden'}</span>
         </button>
       </div>
 
@@ -440,7 +439,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         }`}
       >
         <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-        <span>Corridor Temps Réel • OSRM + Open-Meteo</span>
+        <span>Live Corridor Tracking • OSRM + Open-Meteo</span>
       </div>
     </div>
   );
