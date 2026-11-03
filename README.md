@@ -376,29 +376,7 @@ Corridor Heatmap generated with 96 grid points across hours: [0, 3, 6, 9, 12, 18
 
 ---
 
-## 8. Loom Walkthrough Script (5–10 Minutes)
-
-When recording the submission walkthrough, follow this structured presentation:
-
-1. **Introduction & Candidate Presentation (1 min)**:
-   - State your name and the role: Cheikh Mouhamadou Fadel Diop — Full Stack & Software Engineer.
-   - Mention the tech stack: React 18, TypeScript, Tailwind CSS, Leaflet, Django 5, DRF, OSRM, Open-Meteo.
-2. **Interactive Demonstration (3 min)**:
-   - Use the preset buttons: Select **Chicago → Denver** with **42,000 lbs** load.
-   - Show how the recommendation engine ranks routes: Explain why the shortest route is not always recommended if severe winds in Nebraska or Iowa trigger the cargo rollover threshold.
-   - Interact with the **0–48h Storm Timeline Slider**: Play the animation to visualize weather systems advancing across the travel corridor.
-   - Click on route checkpoints: Inspect individual arrival times (ETAs), wind speeds, rain/snow metrics, and the plain-English risk explanation.
-3. **Engineering & Architecture (3 min)**:
-   - Walk through `risk_engine.py`: Show how the mathematical model and weight rules are isolated in pure functions without framework coupling.
-   - Walk through `routing_service.py`: Highlight the 3-route guarantee via waypoint diversions and geodesic distance interpolation.
-   - Show frontend reactivity: Smooth Leaflet rendering, zero re-rendering glitches, custom dark/light theme switching without API key watermarks.
-4. **Conclusion & Test Coverage (1 min)**:
-   - Run `python -m unittest discover -s backend` in the terminal to showcase 100% passing tests.
-   - Conclude with readiness for containerized production deployment.
-
----
-
-## 9. Candidate Profile
+## 8. Candidate Profile
 
 **Cheikh Mouhamadou Fadel Diop**  
 Full Stack & Software Engineer  
