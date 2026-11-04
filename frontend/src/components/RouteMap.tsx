@@ -25,30 +25,27 @@ interface TileProviderConfig {
   attribution?: string;
 }
 
-// 100% Free, Native, Reliable Basemap Providers (CartoDB & Esri - Never Blocked, No API Keys)
+// 100% Free, Official Esri Global Basemaps (Zero API Keys, Zero Watermarks, Never Blocked)
 const TILE_PROVIDERS: Record<MapViewStyle, TileProviderConfig> = {
   dark: {
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    maxZoom: 20,
-    subdomains: ['a', 'b', 'c', 'd'],
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 18,
+    attribution: '&copy; Esri',
   },
   light: {
-    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-    maxZoom: 20,
-    subdomains: ['a', 'b', 'c', 'd'],
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 18,
+    attribution: '&copy; Esri',
   },
   satellite: {
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    maxZoom: 19,
+    maxZoom: 18,
     attribution: '&copy; Esri',
   },
   navigation: {
-    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    maxZoom: 20,
-    subdomains: ['a', 'b', 'c', 'd'],
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 18,
+    attribution: '&copy; Esri',
   },
 };
 
@@ -479,7 +476,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         }`}
       >
         <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-        <span>Live Corridor Tracking • OSRM + CartoDB</span>
+        <span>Live Corridor Tracking • OSRM + Esri</span>
       </div>
     </div>
   );
