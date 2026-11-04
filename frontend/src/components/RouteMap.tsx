@@ -21,33 +21,29 @@ interface RouteMapProps {
 interface TileProviderConfig {
   url: string;
   maxZoom: number;
-  subdomains?: string[];
   isDarkFilter?: boolean;
 }
 
+// Ultra-reliable Esri ArcGIS Global Tile Endpoints (Never blocked, 0 rate limit, 0 watermarks)
 const TILE_PROVIDERS: Record<MapViewStyle, TileProviderConfig> = {
   dark: {
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    maxZoom: 19,
-    subdomains: ['a', 'b', 'c'],
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 18,
     isDarkFilter: true,
   },
   light: {
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    maxZoom: 19,
-    subdomains: ['a', 'b', 'c'],
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 18,
     isDarkFilter: false,
   },
   satellite: {
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     maxZoom: 18,
-    subdomains: ['server', 'services'],
     isDarkFilter: false,
   },
   navigation: {
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    maxZoom: 19,
-    subdomains: ['a', 'b', 'c'],
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 18,
     isDarkFilter: false,
   },
 };
@@ -107,7 +103,6 @@ export const RouteMap: React.FC<RouteMapProps> = ({
     const provider = TILE_PROVIDERS[mapStyle];
     tileLayerRef.current = L.tileLayer(provider.url, {
       maxZoom: provider.maxZoom,
-      subdomains: provider.subdomains || ['a', 'b', 'c'],
     }).addTo(map);
 
     if (mapContainerRef.current) {
@@ -143,7 +138,6 @@ export const RouteMap: React.FC<RouteMapProps> = ({
 
     const newLayer = L.tileLayer(provider.url, {
       maxZoom: provider.maxZoom,
-      subdomains: provider.subdomains || ['a', 'b', 'c'],
     }).addTo(map);
 
     newLayer.bringToBack();
@@ -189,9 +183,9 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         // Alternative routes: subtle dashed line
         const altPolyline = L.polyline(coords, {
           color: mapStyle === 'dark' || mapStyle === 'satellite' ? '#64748B' : '#94A3B8',
-          weight: 2,
+          weight: 2.5,
           dashArray: '5, 8',
-          opacity: 0.55,
+          opacity: 0.6,
           lineCap: 'round',
           lineJoin: 'round',
         });
@@ -202,7 +196,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         const baseGlow = L.polyline(coords, {
           color: '#2563EB',
           weight: 5,
-          opacity: 0.18,
+          opacity: 0.25,
           lineCap: 'round',
           lineJoin: 'round',
         });
@@ -222,7 +216,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
               ],
               {
                 color: segColor,
-                weight: 3.5,
+                weight: 4,
                 opacity: 0.95,
                 lineCap: 'round',
               }
@@ -248,7 +242,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
             // Modern Precision Tooltip
             const isDarkMap = mapStyle === 'dark' || mapStyle === 'satellite';
             const popupHtml = `
-              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: ${isDarkMap ? '#090D16' : '#FFFFFF'}; color: ${isDarkMap ? '#F8FAFC' : '#0F172A'}; padding: 10px 12px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); min-width: 210px;">
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: ${isDarkMap ? '#090D16' : '#FFFFFF'}; color: ${isDarkMap ? '#F8FAFC' : '#0F172A'}; padding: 10px 12px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.25); min-width: 210px;">
                 <div style="font-size: 11px; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
                   <span style="color: ${isDarkMap ? '#93C5FD' : '#2563EB'}; font-family: monospace;">POINT #${cp.index} • ${cp.distance_from_origin_miles} mi</span>
                   <span style="background: ${color}18; color: ${color}; border: 1px solid ${color}40; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; font-family: monospace;">

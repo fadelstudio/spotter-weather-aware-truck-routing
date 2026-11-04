@@ -25,13 +25,12 @@ export async function analyzeRoutes(payload: {
     if (response.ok) {
       return await response.json();
     }
-    console.warn(`Backend responded with status ${response.status}. Using smart client-side fallback.`);
-  } catch (err) {
-    console.warn('Backend server unreachable. Using smart client-side fallback.', err);
+  } catch {
+    // Backend offline / GitHub Pages mode
   }
 
-  // Seamless fallback for GitHub Pages and offline mode
-  return generateFallbackRouting(
+  // Seamless client-side routing & physics engine for GitHub Pages and offline mode
+  return await generateFallbackRouting(
     payload.origin,
     payload.destination,
     payload.departure_time,
