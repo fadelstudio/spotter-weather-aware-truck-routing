@@ -21,30 +21,34 @@ interface RouteMapProps {
 interface TileProviderConfig {
   url: string;
   maxZoom: number;
-  isDarkFilter?: boolean;
+  subdomains?: string[];
+  attribution?: string;
 }
 
-// Ultra-reliable Esri ArcGIS Global Tile Endpoints (Never blocked, 0 rate limit, 0 watermarks)
+// 100% Free, Native, Reliable Basemap Providers (CartoDB & Esri - Never Blocked, No API Keys)
 const TILE_PROVIDERS: Record<MapViewStyle, TileProviderConfig> = {
   dark: {
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-    maxZoom: 18,
-    isDarkFilter: true,
+    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    maxZoom: 20,
+    subdomains: ['a', 'b', 'c', 'd'],
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
   },
   light: {
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-    maxZoom: 18,
-    isDarkFilter: false,
+    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    maxZoom: 20,
+    subdomains: ['a', 'b', 'c', 'd'],
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
   },
   satellite: {
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    maxZoom: 18,
-    isDarkFilter: false,
+    maxZoom: 19,
+    attribution: '&copy; Esri',
   },
   navigation: {
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
-    maxZoom: 18,
-    isDarkFilter: false,
+    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    maxZoom: 20,
+    subdomains: ['a', 'b', 'c', 'd'],
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
   },
 };
 
@@ -68,7 +72,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
-  const tileLayerRef = useRef<any>(null);
+  const tileLayersRef = useRef<Partial<Record<MapViewStyle, any>>>({});
   const layersGroupRef = useRef<any>(null);
   const heatmapGroupRef = useRef<any>(null);
   const lastFittedRouteKeyRef = useRef<string>('');
@@ -100,13 +104,23 @@ export const RouteMap: React.FC<RouteMapProps> = ({
     // Zoom control on top-right
     L.control.zoom({ position: 'topright' }).addTo(map);
 
-    const provider = TILE_PROVIDERS[mapStyle];
-    tileLayerRef.current = L.tileLayer(provider.url, {
-      maxZoom: provider.maxZoom,
-    }).addTo(map);
+    // Pre-instantiate all tile layers to eliminate lag, white flashes, and tile teardown
+    const layers: Partial<Record<MapViewStyle, any>> = {};
+    (Object.keys(TILE_PROVIDERS) as MapViewStyle[]).forEach((key) => {
+      const p = TILE_PROVIDERS[key];
+      const layer = L.tileLayer(p.url, {
+        maxZoom: p.maxZoom,
+        subdomains: p.subdomains || ['a', 'b', 'c', 'd'],
+        attribution: p.attribution || '',
+      });
+      layers[key] = layer;
+    });
+    tileLayersRef.current = layers;
 
-    if (mapContainerRef.current) {
-      mapContainerRef.current.classList.toggle('map-dark-tiles', !!provider.isDarkFilter);
+    // Add initial style layer
+    const initialLayer = layers[mapStyle] || layers.dark;
+    if (initialLayer) {
+      initialLayer.addTo(map);
     }
 
     layersGroupRef.current = L.layerGroup().addTo(map);
@@ -114,39 +128,51 @@ export const RouteMap: React.FC<RouteMapProps> = ({
 
     mapInstanceRef.current = map;
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       map.invalidateSize();
-    }, 200);
+    }, 150);
 
     return () => {
+      clearTimeout(timer);
       map.remove();
       mapInstanceRef.current = null;
     };
   }, []);
 
-  // Update Tile Layer and dark filter when user switches Map Style
+  // Seamless switch of tile layers: add new layer underneath BEFORE removing old
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    const provider = TILE_PROVIDERS[mapStyle];
+    const layers = tileLayersRef.current;
+    const targetLayer = layers[mapStyle];
 
-    if (tileLayerRef.current) {
-      map.removeLayer(tileLayerRef.current);
-      tileLayerRef.current = null;
+    if (targetLayer) {
+      if (!map.hasLayer(targetLayer)) {
+        targetLayer.addTo(map);
+        targetLayer.bringToBack();
+      }
+      Object.entries(layers).forEach(([key, layer]) => {
+        if (key !== mapStyle && map.hasLayer(layer)) {
+          map.removeLayer(layer);
+        }
+      });
     }
 
-    const newLayer = L.tileLayer(provider.url, {
-      maxZoom: provider.maxZoom,
-    }).addTo(map);
-
-    newLayer.bringToBack();
-    tileLayerRef.current = newLayer;
-
-    if (mapContainerRef.current) {
-      mapContainerRef.current.classList.toggle('map-dark-tiles', !!provider.isDarkFilter);
-    }
+    // Recalculate tile sizing immediately
+    map.invalidateSize();
   }, [mapStyle]);
+
+  // Invalidate map size on theme switch
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (map) {
+      const timer = setTimeout(() => {
+        map.invalidateSize();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [theme]);
 
   // Recenter helper explicitly triggered by user
   const handleRecenter = () => {
@@ -180,7 +206,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
       coords.forEach((c) => allLatLngs.push(c as [number, number]));
 
       if (!isSelected) {
-        // Alternative routes: subtle dashed line
+        // Alternative routes: subtle dashed line along full highway
         const altPolyline = L.polyline(coords, {
           color: mapStyle === 'dark' || mapStyle === 'satellite' ? '#64748B' : '#94A3B8',
           weight: 2.5,
@@ -192,7 +218,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         altPolyline.on('click', () => onSelectRoute(route.id));
         layers.addLayer(altPolyline);
       } else {
-        // Selected route: clean glow base
+        // Selected route: clean glow base hugging real road geometry
         const baseGlow = L.polyline(coords, {
           color: '#2563EB',
           weight: 5,
@@ -202,29 +228,51 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         });
         layers.addLayer(baseGlow);
 
-        // Highway segments colored strictly by risk level
+        // Highway segments colored strictly by risk level along the actual highway path
         if (route.checkpoints && route.checkpoints.length > 1) {
-          for (let i = 0; i < route.checkpoints.length - 1; i++) {
-            const cpA = route.checkpoints[i];
-            const cpB = route.checkpoints[i + 1];
-            const segColor = cpB.risk_evaluation.overall_color || '#3B82F6';
+          // Pre-calculate nearest index in coords for each checkpoint to slice real highway turns
+          const cpIndices: number[] = route.checkpoints.map((cp) => {
+            let bestIdx = 0;
+            let minDist = Infinity;
+            for (let c = 0; c < coords.length; c++) {
+              const dLat = coords[c][0] - cp.lat;
+              const dLng = coords[c][1] - cp.lng;
+              const distSq = dLat * dLat + dLng * dLng;
+              if (distSq < minDist) {
+                minDist = distSq;
+                bestIdx = c;
+              }
+            }
+            return bestIdx;
+          });
 
-            const segLine = L.polyline(
-              [
-                [cpA.lat, cpA.lng],
-                [cpB.lat, cpB.lng],
-              ],
-              {
+          // Ensure monotonic index ordering so segments don't loop backwards
+          for (let i = 1; i < cpIndices.length; i++) {
+            if (cpIndices[i] < cpIndices[i - 1]) {
+              cpIndices[i] = cpIndices[i - 1];
+            }
+          }
+
+          for (let i = 0; i < route.checkpoints.length - 1; i++) {
+            const cpB = route.checkpoints[i + 1];
+            const segColor = cpB.risk_evaluation?.overall_color || '#3B82F6';
+            const startIdx = cpIndices[i];
+            const endIdx = Math.max(startIdx + 1, cpIndices[i + 1]);
+            const subCoords = coords.slice(startIdx, endIdx + 1);
+
+            if (subCoords.length >= 2) {
+              const segLine = L.polyline(subCoords, {
                 color: segColor,
                 weight: 4,
                 opacity: 0.95,
                 lineCap: 'round',
-              }
-            );
-            layers.addLayer(segLine);
+                lineJoin: 'round',
+              });
+              layers.addLayer(segLine);
+            }
           }
 
-          // Checkpoint nodes
+          // Checkpoint nodes along the route
           route.checkpoints.forEach((cp) => {
             const evalRes = cp.risk_evaluation;
             const color = evalRes.overall_color || '#3B82F6';
@@ -354,12 +402,10 @@ export const RouteMap: React.FC<RouteMapProps> = ({
     >
       <div
         ref={mapContainerRef}
-        className={`w-full h-full transition-opacity duration-200 ${
-          isDark ? 'bg-[#070A12]' : 'bg-[#F8FAFC]'
-        }`}
+        className="w-full h-full"
       />
 
-      {/* Floating Modern OSRM Navigation Toolbar (Top Left) */}
+      {/* Floating Modern Navigation Toolbar (Top Left) */}
       <div className="absolute top-3 left-3 z-[1000] flex flex-wrap items-center gap-2">
         {/* Map Views Switcher */}
         <div
@@ -433,7 +479,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({
         }`}
       >
         <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-        <span>Live Corridor Tracking • OSRM + Open-Meteo</span>
+        <span>Live Corridor Tracking • OSRM + CartoDB</span>
       </div>
     </div>
   );

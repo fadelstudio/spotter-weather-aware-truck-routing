@@ -20,13 +20,8 @@
 
 /* Leaflet Customizations - Clean modern map styling */
 .leaflet-container {
-  background: transparent !important;
+  background: #0B0F19 !important;
   outline: none;
-}
-
-/* High-contrast Cockpit Dark Map Tile Inversion (Zero API key, crisp and legible) */
-.map-dark-tiles .leaflet-tile-pane {
-  filter: invert(100%) hue-rotate(180deg) brightness(85%) contrast(92%);
 }
 
 .leaflet-popup-content-wrapper {
@@ -59,9 +54,7 @@
   border: none !important;
 }
 
-.dark .leaflet-control-zoom a,
-.map-dark-tiles .leaflet-control-zoom a {
+.dark .leaflet-control-zoom a {
   background-color: rgba(11, 15, 25, 0.95) !important;
   color: #f1f5f9 !important;
 }
-
